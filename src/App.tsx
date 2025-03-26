@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './providers/ThemeProvider';
 import { Toaster } from './components/ui/sonner';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -45,7 +45,7 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <BrowserRouter basename={getBasename()}>
+          <HashRouter>
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -72,7 +72,7 @@ const App: React.FC = () => {
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
-          </BrowserRouter>
+          </HashRouter>
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
