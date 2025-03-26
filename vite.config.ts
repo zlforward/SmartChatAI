@@ -21,13 +21,15 @@ export default defineConfig(({ mode }) => ({
       brotliSize: true,
     }),
   ].filter(Boolean),
-  base: './',
+  base: process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/' : '/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
     rollupOptions: {
       output: {
         manualChunks: {
