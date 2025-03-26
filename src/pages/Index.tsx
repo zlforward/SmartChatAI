@@ -186,7 +186,7 @@ const Index = () => {
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                  className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white !p-2"
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 >
                   {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
