@@ -32,13 +32,12 @@ const MediaPage = React.lazy(() => import('./pages/MediaPage'));
 const InteractiveGamePage = React.lazy(() => import('./pages/InteractiveGamePage'));
 const DigitalHumanPage = React.lazy(() => import('./pages/DigitalHumanPage'));
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <Toaster />
-          <BrowserRouter>
+          <BrowserRouter basename="/SmartChatAI">
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -66,6 +65,7 @@ const App = () => {
               </Routes>
             </Suspense>
           </BrowserRouter>
+          <Toaster />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
