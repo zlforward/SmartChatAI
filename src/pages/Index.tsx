@@ -160,7 +160,7 @@ const Index = () => {
             <div className="text-white">
               <div className="mb-4">
                 <img 
-                  src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png"
+                  src={process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png' : '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'}
                   alt="知了智能助手" 
                   className="h-12"
                 />
@@ -195,7 +195,7 @@ const Index = () => {
             </div>
             <div className="hidden md:block">
               <img 
-                src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png"
+                src={process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png' : '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'}
                 alt="知了智能助手" 
                 className="max-w-md mx-auto animate-float" 
               />
@@ -374,7 +374,7 @@ const Index = () => {
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="w-10 h-10 rounded-full overflow-hidden">
                     <img 
-                      src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png"
+                      src={process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png' : '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'}
                       alt="知了助手" 
                       className="w-full h-full object-cover" 
                     />
