@@ -7,7 +7,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { 
   ArrowRight, Bot, MessageCircle, Users, LayoutGrid, 
   Video, Music, ShoppingCart, Calendar, Play, Pause,
-  Brain, DollarSign, Gamepad2, Sun, Moon
+  Brain, DollarSign, Gamepad2, Sun, Moon, Image, FileText,
+  Workflow, Clapperboard, Mic, User, Box, Brush
 } from 'lucide-react';
 import { 
   Carousel, 
@@ -103,6 +104,106 @@ const Index = () => {
       icon: <MessageCircle className="text-zhiliao-500" />,
       link: '/digital-human',
       image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1470&auto=format&fit=crop"
+    }
+  ];
+
+  const aiFeatures = [
+    {
+      title: 'AI 生文案',
+      description: '智能文案创作，多场景文本生成',
+      icon: <FileText className="text-zhiliao-500" />,
+      link: '/ai/copywriting',
+      tools: ['GPT-4', 'Claude', 'Gemini'],
+      image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1000"
+    },
+    {
+      title: 'AI 生图片',
+      description: '高质量图像生成与编辑',
+      icon: <Image className="text-zhiliao-500" />,
+      link: '/ai/image',
+      tools: ['SD', 'LUMIA', 'COMFYUI', 'FLUX'],
+      image: "https://images.unsplash.com/photo-1519638831568-d9897f54ed69?q=80&w=1000"
+    },
+    {
+      title: 'AI 生视频',
+      description: '智能视频创作与编辑',
+      icon: <Clapperboard className="text-zhiliao-500" />,
+      link: '/ai/video',
+      tools: ['可灵', '即梦', '海螺', 'vidu'],
+      image: "https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=1000"
+    },
+    {
+      title: 'AI 生音乐',
+      description: '智能音乐创作与编曲',
+      icon: <Music className="text-zhiliao-500" />,
+      link: '/ai/music',
+      tools: ['海绵', 'suno', 'udio'],
+      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1000"
+    },
+    {
+      title: 'AI 对口型',
+      description: '智能语音唇形同步',
+      icon: <Mic className="text-zhiliao-500" />,
+      link: '/ai/lip-sync',
+      tools: ['wav2lip', 'SadTalker'],
+      image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1000"
+    },
+    {
+      title: 'AI 换装',
+      description: '智能服装搭配与换装',
+      icon: <User className="text-zhiliao-500" />,
+      link: '/ai/dress-up',
+      tools: ['DressFormer', 'VITON'],
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000"
+    },
+    {
+      title: 'AI 生3D资产',
+      description: '3D模型与场景生成',
+      icon: <Box className="text-zhiliao-500" />,
+      link: '/ai/3d',
+      tools: ['混元', 'tripo', 'meshy'],
+      image: "https://images.unsplash.com/photo-1525434280327-e525e03f17ef?q=80&w=1000"
+    },
+    {
+      title: 'AI 工作流',
+      description: '自定义AI工作流程',
+      icon: <Workflow className="text-zhiliao-500" />,
+      link: '/ai/workflow',
+      tools: ['n8n', 'Zapier', 'Make'],
+      image: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1000"
+    }
+  ];
+
+  const aiWorks = [
+    {
+      type: '文案',
+      title: '品牌故事文案',
+      content: '匠心精神，传承创新...',
+      image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1000"
+    },
+    {
+      type: '图片',
+      title: '未来城市景观',
+      content: 'SD生成未来科技城市',
+      image: "https://images.unsplash.com/photo-1519638831568-d9897f54ed69?q=80&w=1000"
+    },
+    {
+      type: '视频',
+      title: '产品宣传片',
+      content: '可灵生成的产品展示',
+      image: "https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=1000"
+    },
+    {
+      type: '音乐',
+      title: '电子音乐',
+      content: 'suno生成的电子乐曲',
+      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1000"
+    },
+    {
+      type: '3D',
+      title: '游戏角色模型',
+      content: '混元生成的游戏角色',
+      image: "https://images.unsplash.com/photo-1525434280327-e525e03f17ef?q=80&w=1000"
     }
   ];
 
@@ -428,6 +529,82 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-2">AI 创作中心</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            一站式AI创作平台，激发无限创意可能
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {aiFeatures.map((feature, index) => (
+            <Link to={feature.link} key={index}>
+              <Card className={`h-full transition-all hover:-translate-y-1 hover:shadow-md ${theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'hover:bg-slate-50'}`}>
+                <div className="h-40 w-full overflow-hidden">
+                  <img 
+                    src={feature.image} 
+                    alt={feature.title} 
+                    className="w-full h-full object-cover transition-transform hover:scale-105"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-1">{feature.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-2">{feature.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {feature.tools.map((tool, i) => (
+                          <span key={i} className="text-xs px-2 py-1 rounded-full bg-zhiliao-100 text-zhiliao-700">
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className={`py-12 ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-50'}`}>
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2">AI 作品展示</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              探索AI创作的无限可能
+            </p>
+          </div>
+          
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+            {aiWorks.map((work, index) => (
+              <div 
+                key={index} 
+                className={`break-inside-avoid rounded-lg overflow-hidden ${theme === 'dark' ? 'bg-slate-700' : 'bg-white'} shadow-lg`}
+              >
+                <img 
+                  src={work.image} 
+                  alt={work.title} 
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <span className={`text-xs px-2 py-1 rounded-full ${theme === 'dark' ? 'bg-slate-600' : 'bg-slate-100'}`}>
+                    {work.type}
+                  </span>
+                  <h3 className="font-semibold mt-2">{work.title}</h3>
+                  <p className="text-sm text-muted-foreground">{work.content}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
