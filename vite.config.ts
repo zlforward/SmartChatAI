@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => ({
       brotliSize: true,
     }),
   ].filter(Boolean),
+  base: '/SmartChatAI/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
