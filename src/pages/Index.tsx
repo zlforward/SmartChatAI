@@ -169,7 +169,11 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="text-white">
               <div className="mb-4">
-                <ZhiliaoLogo size="xl" variant="full" theme="dark" />
+                <img 
+                  src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png"
+                  alt="知了智能助手" 
+                  className="h-12"
+                />
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 智能助手社交平台
@@ -177,7 +181,7 @@ const Index = () => {
               <p className="text-xl mb-6">
                 今天你知了了吗？全方位提供智能服务与社交体验。
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <Link to="/register">
                   <Button size="lg" className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white">
                     立即注册
@@ -185,15 +189,23 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/20">
+                  <Button size="lg" className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white">
                     登录账户
                   </Button>
                 </Link>
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                >
+                  {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
               </div>
             </div>
             <div className="hidden md:block">
               <img 
-                src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png" 
+                src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png"
                 alt="知了智能助手" 
                 className="max-w-md mx-auto animate-float" 
               />
@@ -218,54 +230,61 @@ const Index = () => {
                 loop: true,
                 align: "start"
               }}
-              onCreated={onCarouselCreated}
             >
-              <CarouselContent>
-                {videos.map((video, index) => (
-                  <CarouselItem key={index}>
-                    <div className={`relative rounded-xl overflow-hidden aspect-video ${theme === 'dark' ? 'bg-slate-700' : 'bg-white'} shadow-lg`}>
-                      <video 
-                        id={`video-${index}`}
-                        className="w-full h-full object-cover"
-                        poster={video.thumbnail}
-                        src={video.src}
-                        onEnded={handleVideoEnded}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-all"
-                          onClick={toggleVideoPlay}
-                        >
-                          {isPlaying && activeVideoIndex === index ? 
-                            <Pause className="h-8 w-8 text-white" /> : 
-                            <Play className="h-8 w-8 text-white" />
-                          }
-                        </Button>
+              <div onMouseEnter={(e) => {
+                const api = (e.currentTarget as any)._embla;
+                if (api) {
+                  setCarouselApi(api);
+                  onCarouselCreated(api);
+                }
+              }}>
+                <CarouselContent>
+                  {videos.map((video, index) => (
+                    <CarouselItem key={index}>
+                      <div className={`relative rounded-xl overflow-hidden aspect-video ${theme === 'dark' ? 'bg-slate-700' : 'bg-white'} shadow-lg`}>
+                        <video 
+                          id={`video-${index}`}
+                          className="w-full h-full object-cover"
+                          poster={video.thumbnail}
+                          src={video.src}
+                          onEnded={handleVideoEnded}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
+                            className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 transition-all"
+                            onClick={toggleVideoPlay}
+                          >
+                            {isPlaying && activeVideoIndex === index ? 
+                              <Pause className="h-8 w-8 text-white" /> : 
+                              <Play className="h-8 w-8 text-white" />
+                            }
+                          </Button>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                          <h3 className="text-white font-medium text-lg">{video.title}</h3>
+                        </div>
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-                        <h3 className="text-white font-medium text-lg">{video.title}</h3>
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="flex justify-center mt-4 gap-2">
-                {videos.map((_, index) => (
-                  <button 
-                    key={index}
-                    className={`w-3 h-3 rounded-full transition-all ${
-                      activeVideoIndex === index 
-                        ? 'bg-zhiliao-500 scale-110' 
-                        : `${theme === 'dark' ? 'bg-slate-600' : 'bg-slate-300'} hover:bg-zhiliao-400`
-                    }`}
-                    onClick={() => handleManualSelect(index)}
-                  />
-                ))}
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="flex justify-center mt-4 gap-2">
+                  {videos.map((_, index) => (
+                    <button 
+                      key={index}
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        activeVideoIndex === index 
+                          ? 'bg-zhiliao-500 scale-110' 
+                          : `${theme === 'dark' ? 'bg-slate-600' : 'bg-slate-300'} hover:bg-zhiliao-400`
+                      }`}
+                      onClick={() => handleManualSelect(index)}
+                    />
+                  ))}
+                </div>
+                <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2" />
+                <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2" />
               </div>
-              <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2" />
-              <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2" />
             </Carousel>
           </div>
         </div>
@@ -365,7 +384,7 @@ const Index = () => {
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="w-10 h-10 rounded-full overflow-hidden">
                     <img 
-                      src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png" 
+                      src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png"
                       alt="知了助手" 
                       className="w-full h-full object-cover" 
                     />
