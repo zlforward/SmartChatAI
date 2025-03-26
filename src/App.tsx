@@ -5,6 +5,7 @@ import { Toaster } from './components/ui/sonner';
 import LoadingSpinner from './components/LoadingSpinner';
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ErrorBoundary from './components/ErrorBoundary';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import TermsPage from './pages/TermsPage';
@@ -50,45 +51,47 @@ const getBasename = () => {
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <HashRouter>
-            <Suspense fallback={
-              <div className="flex items-center justify-center min-h-screen">
-                <LoadingSpinner />
-              </div>
-            }>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/chat" element={<ChatPage />} />
-                <Route path="/groups" element={<GroupsPage />} />
-                <Route path="/radar" element={<RadarPage />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/membership" element={<MembershipPage />} />
-                <Route path="/user-center" element={<UserCenterPage />} />
-                <Route path="/psychology" element={<PsychologyPage />} />
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/news" element={<NewsPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/help" element={<HelpPage />} />
-                <Route path="/media" element={<MediaPage />} />
-                <Route path="/interactive-game" element={<InteractiveGamePage />} />
-                <Route path="/digital-human" element={<DigitalHumanPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/faq" element={<FaqPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Suspense>
-          </HashRouter>
-          <Toaster />
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light">
+          <TooltipProvider>
+            <HashRouter>
+              <Suspense fallback={
+                <div className="flex items-center justify-center min-h-screen">
+                  <LoadingSpinner />
+                </div>
+              }>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/chat" element={<ChatPage />} />
+                  <Route path="/groups" element={<GroupsPage />} />
+                  <Route path="/radar" element={<RadarPage />} />
+                  <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/membership" element={<MembershipPage />} />
+                  <Route path="/user-center" element={<UserCenterPage />} />
+                  <Route path="/psychology" element={<PsychologyPage />} />
+                  <Route path="/blog" element={<BlogPage />} />
+                  <Route path="/news" element={<NewsPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/help" element={<HelpPage />} />
+                  <Route path="/media" element={<MediaPage />} />
+                  <Route path="/interactive-game" element={<InteractiveGamePage />} />
+                  <Route path="/digital-human" element={<DigitalHumanPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/faq" element={<FaqPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
+            </HashRouter>
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 
