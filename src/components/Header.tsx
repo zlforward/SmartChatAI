@@ -57,9 +57,6 @@ const Header: React.FC = () => {
             <Link to="/media" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
               媒体中心
             </Link>
-            <Link to="/ai-assistant" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
-              AI 助手
-            </Link>
             <Link to="/digital-human" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
               数字人对话
             </Link>
@@ -156,13 +153,6 @@ const Header: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               媒体中心
-            </Link>
-            <Link 
-              to="/ai-assistant" 
-              className="block py-2 text-foreground/80 hover:text-zhiliao-600"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              AI 助手
             </Link>
             <Link 
               to="/digital-human" 
