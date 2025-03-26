@@ -32,12 +32,20 @@ const MediaPage = React.lazy(() => import('./pages/MediaPage'));
 const InteractiveGamePage = React.lazy(() => import('./pages/InteractiveGamePage'));
 const DigitalHumanPage = React.lazy(() => import('./pages/DigitalHumanPage'));
 
+// 获取基础路径
+const getBasename = () => {
+  if (process.env.DEPLOY_ENV === 'GH_PAGES') {
+    return '/SmartChatAI';
+  }
+  return '/';
+};
+
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <BrowserRouter basename="/SmartChatAI">
+          <BrowserRouter basename={getBasename()}>
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
                 <Route path="/" element={<Index />} />
