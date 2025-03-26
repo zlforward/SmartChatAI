@@ -142,7 +142,7 @@ const CareersPage: React.FC = () => {
           <h1 className="text-4xl font-bold mb-6">加入我们</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             与优秀的人一起，创造非凡的产品。
-            我们期待有才华、有激情的你加入知聊团队。
+            我们期待有才华、有激情的你加入知了团队。
           </p>
         </section>
 

@@ -35,8 +35,8 @@ const HelpPage: React.FC = () => {
       icon: <HelpCircle className="h-6 w-6" />,
       faqs: [
         {
-          question: '如何注册知聊账号？',
-          answer: '您可以通过手机号码或邮箱注册知聊账号。点击首页的"注册"按钮，按照提示填写相关信息即可完成注册。'
+          question: '如何注册知了账号？',
+          answer: '您可以通过手机号码或邮箱注册知了账号。点击首页的"注册"按钮，按照提示填写相关信息即可完成注册。'
         },
         {
           question: '忘记密码怎么办？',

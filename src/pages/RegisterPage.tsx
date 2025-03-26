@@ -78,7 +78,7 @@ const RegisterPage: React.FC = () => {
           <Card className={theme === 'dark' ? 'bg-slate-800 border-slate-700' : ''}>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">注册</CardTitle>
-              <CardDescription>创建一个新的知聊账号</CardDescription>
+              <CardDescription>创建一个新的知了账号</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleRegister} className="space-y-4">

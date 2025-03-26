@@ -42,6 +42,9 @@ const Header: React.FC = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
+            <Link to="/" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
+              首页
+            </Link>
             <Link to="/chat" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
               智能聊天
             </Link>
@@ -54,6 +57,9 @@ const Header: React.FC = () => {
             <Link to="/media" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
               媒体中心
             </Link>
+            <Link to="/ai-assistant" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
+              AI 助手
+            </Link>
             <Link to="/digital-human" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
               数字人对话
             </Link>
@@ -61,15 +67,6 @@ const Header: React.FC = () => {
               互动影游
             </Link>
           </nav>
-          
-          {/* 快速链接 */}
-          <div className="flex items-center space-x-6">
-            <Link to="/" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">首页</Link>
-            <Link to="/ai-assistant" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">AI 助手</Link>
-            <Link to="/media" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">媒体中心</Link>
-            <Link to="/digital-human" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">数字人对话</Link>
-            <Link to="/interactive-game" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">互动影游</Link>
-          </div>
           
           <div className="hidden md:flex items-center space-x-2">
             <Button 
@@ -126,6 +123,13 @@ const Header: React.FC = () => {
         <div className={`md:hidden ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'} animate-fade-in`}>
           <div className="px-4 py-4 space-y-3">
             <Link 
+              to="/" 
+              className="block py-2 text-foreground/80 hover:text-zhiliao-600"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              首页
+            </Link>
+            <Link 
               to="/chat" 
               className="block py-2 text-foreground/80 hover:text-zhiliao-600"
               onClick={() => setMobileMenuOpen(false)}
@@ -152,6 +156,13 @@ const Header: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               媒体中心
+            </Link>
+            <Link 
+              to="/ai-assistant" 
+              className="block py-2 text-foreground/80 hover:text-zhiliao-600"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              AI 助手
             </Link>
             <Link 
               to="/digital-human" 

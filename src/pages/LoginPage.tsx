@@ -188,7 +188,7 @@ const LoginPage: React.FC = () => {
                       <QrCode className="w-full h-full" />
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      请使用知聊APP扫描二维码登录
+                      请使用知了APP扫描二维码登录
                     </p>
                     <Button 
                       type="button" 
