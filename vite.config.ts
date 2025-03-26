@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => ({
           const name = assetInfo.name || '';
           const ext = name.split('.').pop() || '';
           if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
-            return `assets/images/[name]-[hash][extname]`;
+            return `[name][extname]`;
           }
           return `assets/[ext]/[name]-[hash][extname]`;
         },
