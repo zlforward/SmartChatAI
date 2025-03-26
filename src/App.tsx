@@ -12,7 +12,15 @@ import PrivacyPage from './pages/PrivacyPage';
 import FaqPage from './pages/FaqPage';
 import ContactPage from './pages/ContactPage';
 
-const queryClient = new QueryClient();
+// 创建 QueryClient 实例
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // 懒加载路由组件
 const Index = React.lazy(() => import('./pages/Index'));
@@ -43,10 +51,14 @@ const getBasename = () => {
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <HashRouter>
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={
+              <div className="flex items-center justify-center min-h-screen">
+                <LoadingSpinner />
+              </div>
+            }>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/chat" element={<ChatPage />} />

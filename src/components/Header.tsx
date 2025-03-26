@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Moon, Sun, User, LogIn } from 'lucide-react';
+import { Menu, X, User, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ZhiliaoLogo from './ZhiliaoLogo';
 import { useTheme } from '../providers/ThemeProvider';
@@ -8,7 +8,7 @@ import { Button } from './ui/button';
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,15 +66,6 @@ const Header: React.FC = () => {
           </nav>
           
           <div className="hidden md:flex items-center space-x-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleTheme} 
-              className="rounded-full"
-            >
-              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-            
             <Link to="/login">
               <Button variant="outline" size="sm" className="gap-2 text-zhiliao-500 border-zhiliao-500 hover:bg-zhiliao-50">
                 <LogIn className="w-4 h-4" />
@@ -92,15 +83,6 @@ const Header: React.FC = () => {
           
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleTheme} 
-              className="rounded-full"
-            >
-              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-            
             <button 
               className="text-foreground focus:outline-none"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
