@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => ({
       brotliSize: true,
     }),
   ].filter(Boolean),
-  base: process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/' : '/',
+  base: './',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
