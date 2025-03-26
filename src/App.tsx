@@ -35,7 +35,7 @@ const DigitalHumanPage = React.lazy(() => import('./pages/DigitalHumanPage'));
 // 获取基础路径
 const getBasename = () => {
   if (process.env.DEPLOY_ENV === 'GH_PAGES') {
-    return '/SmartChatAI';
+    return '/SmartChatAI/';
   }
   return '/';
 };
