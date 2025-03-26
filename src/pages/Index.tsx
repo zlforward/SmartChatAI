@@ -52,12 +52,20 @@ const Index = () => {
 
   const cards = [
     { 
+      title: 'AI 创作中心',
+      description: '一站式AI创作平台，激发无限创意可能',
+      icon: <Brain className="text-zhiliao-500" />,
+      link: '/ai-creation',
+      badge: '新功能',
+      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995"
+    },
+    { 
       title: '智能聊天',
       description: '与 AI 助手实时交流，获取信息与建议',
       icon: <Bot className="text-zhiliao-500" />,
       link: '/chat',
       badge: '热门',
-      image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=1470&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
     },
     { 
       title: '社群互动',

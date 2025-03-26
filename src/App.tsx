@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './providers/ThemeProvider';
 import { Toaster } from './components/ui/sonner';
@@ -40,6 +40,7 @@ const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 const MediaPage = React.lazy(() => import('./pages/MediaPage'));
 const InteractiveGamePage = React.lazy(() => import('./pages/InteractiveGamePage'));
 const DigitalHumanPage = React.lazy(() => import('./pages/DigitalHumanPage'));
+const AICreationPage = React.lazy(() => import('./pages/AICreationPage'));
 
 // 获取基础路径
 const getBasename = () => {
@@ -83,6 +84,7 @@ const App: React.FC = () => {
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/faq" element={<FaqPage />} />
                   <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/ai-creation" element={<AICreationPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Suspense>
