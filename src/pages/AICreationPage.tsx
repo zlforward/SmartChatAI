@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@/providers/ThemeProvider';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar } from '@/components/ui/avatar';
 import { 
   FileText, Image, Clapperboard, Music, 
   Mic, User, Box, Workflow, Loader2, RefreshCw,
-  Brush, ChevronRight
+  Brush, ChevronRight, Send, Bot
 } from 'lucide-react';
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
 
 const AICreationPage = () => {
   const { theme } = useTheme();
@@ -14,8 +23,29 @@ const AICreationPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const categories = [
+    {
+      id: 'text',
+      title: '文案创作',
+      icon: <FileText className="h-6 w-6" />,
+      tools: [
+        { id: 'gpt4', name: 'GPT-4', description: '智能文案助手' },
+        { id: 'claude', name: 'Claude', description: '专业写作助手' },
+        { id: 'gemini', name: 'Gemini', description: '多模态创作' },
+      ]
+    },
     {
       id: 'image',
       title: '图片生成',
@@ -34,16 +64,6 @@ const AICreationPage = () => {
         { id: 'keling', name: '可灵', description: '智能视频创作' },
         { id: 'jimeng', name: '即梦', description: '视频风格转换' },
         { id: 'vidu', name: 'VIDU', description: '视频剪辑助手' },
-      ]
-    },
-    {
-      id: 'text',
-      title: '文案创作',
-      icon: <FileText className="h-6 w-6" />,
-      tools: [
-        { id: 'gpt4', name: 'GPT-4', description: '智能文案助手' },
-        { id: 'claude', name: 'Claude', description: '专业写作助手' },
-        { id: 'gemini', name: 'Gemini', description: '多模态创作' },
       ]
     },
     {
@@ -76,6 +96,29 @@ const AICreationPage = () => {
     }
   ];
 
+  const handleSendMessage = () => {
+    if (!input.trim()) return;
+
+    const newMessage: Message = {
+      role: 'user',
+      content: input,
+      timestamp: new Date()
+    };
+
+    setMessages([...messages, newMessage]);
+    setInput('');
+
+    // 模拟AI回复
+    setTimeout(() => {
+      const aiResponse: Message = {
+        role: 'assistant',
+        content: '这是一个模拟的AI回复消息。在实际应用中，这里会根据不同的AI工具返回相应的生成内容。',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, aiResponse]);
+    }, 1000);
+  };
+
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>
       <div className="container mx-auto px-4 py-8">
@@ -87,151 +130,144 @@ const AICreationPage = () => {
           </span>
         </div>
 
-        {!selectedCategory ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`p-6 rounded-xl transition-all ${
-                  theme === 'dark' 
-                    ? 'bg-slate-800 hover:bg-slate-700' 
-                    : 'bg-white hover:bg-slate-50'
-                } shadow-lg group`}
-              >
-                <div className="flex items-center space-x-4">
-                  <div className={`p-3 rounded-lg ${
-                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
-                  } text-zhiliao-500 group-hover:scale-110 transition-transform`}>
-                    {category.icon}
-                  </div>
-                  <div className="text-left">
-                    <h3 className="font-semibold text-lg">{category.title}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {category.tools.length} 个智能工具
-                    </p>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className={`lg:col-span-1 rounded-xl p-6 ${
+        <div className="grid grid-cols-12 gap-8 h-[calc(100vh-12rem)]">
+          {/* 左侧工具栏 */}
+          <div className="col-span-3">
+            <div className={`rounded-xl p-6 ${
               theme === 'dark' ? 'bg-slate-800' : 'bg-white'
-            } shadow-lg`}>
+            } shadow-lg h-full`}>
               <div className="space-y-4">
-                <h3 className="font-semibold text-lg mb-4">选择工具</h3>
-                {categories.find(c => c.id === selectedCategory)?.tools.map((tool) => (
+                <h3 className="font-semibold text-lg mb-4">创作工具</h3>
+                {categories.map((category) => (
                   <button
-                    key={tool.id}
-                    onClick={() => setSelectedTool(tool.id)}
+                    key={category.id}
+                    onClick={() => {
+                      setSelectedCategory(category.id);
+                      setSelectedTool(null);
+                      setMessages([]);
+                    }}
                     className={`w-full p-4 rounded-lg text-left transition-all ${
-                      selectedTool === tool.id
+                      selectedCategory === category.id
                         ? 'bg-zhiliao-500 text-white'
                         : theme === 'dark'
                         ? 'bg-slate-700 hover:bg-slate-600'
                         : 'bg-slate-100 hover:bg-slate-200'
                     }`}
                   >
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                      {category.icon}
                       <div>
-                        <h4 className="font-medium">{tool.name}</h4>
+                        <h4 className="font-medium">{category.title}</h4>
                         <p className={`text-sm ${
-                          selectedTool === tool.id
+                          selectedCategory === category.id
                             ? 'text-white/80'
                             : 'text-muted-foreground'
-                        }`}>{tool.description}</p>
+                        }`}>{category.tools.length} 个智能工具</p>
                       </div>
-                      <ChevronRight className={`h-5 w-5 ${
-                        selectedTool === tool.id ? 'text-white' : 'text-muted-foreground'
-                      }`} />
                     </div>
                   </button>
                 ))}
-                
-                <Button
-                  variant="outline"
-                  className="w-full mt-4"
-                  onClick={() => {
-                    setSelectedCategory(null);
-                    setSelectedTool(null);
-                  }}
-                >
-                  返回创作类型
-                </Button>
               </div>
             </div>
+          </div>
 
-            <div className={`lg:col-span-2 rounded-xl p-6 ${
+          {/* 右侧内容区 */}
+          <div className="col-span-9">
+            <div className={`rounded-xl ${
               theme === 'dark' ? 'bg-slate-800' : 'bg-white'
-            } shadow-lg`}>
-              {!selectedTool ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  请选择左侧工具开始创作
+            } shadow-lg h-full flex flex-col`}>
+              {!selectedCategory ? (
+                <div className="flex-1 flex items-center justify-center text-muted-foreground">
+                  请选择左侧创作工具开始创作
                 </div>
               ) : (
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">创作提示词</label>
-                    <textarea
-                      className={`w-full p-4 rounded-lg resize-none ${
-                        theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
-                      } border-none focus:ring-2 focus:ring-zhiliao-500`}
-                      rows={4}
-                      placeholder="请输入详细的创作提示词..."
-                    />
-                  </div>
-
-                  <div className="space-y-4">
-                    <Button
-                      className="w-full bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
-                      size="lg"
-                      onClick={() => {}}
-                      disabled={isGenerating}
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          生成中...
-                        </>
-                      ) : (
-                        <>
-                          <RefreshCw className="mr-2 h-5 w-5" />
-                          开始创作
-                        </>
-                      )}
-                    </Button>
-
-                    {isGenerating && (
-                      <div>
-                        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-zhiliao-500 transition-all duration-300"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                        <div className="flex justify-between mt-2 text-sm text-muted-foreground">
-                          <span>创作进度</span>
-                          <span>{Math.round(progress)}%</span>
-                        </div>
+                <>
+                  {/* 工具选择栏 */}
+                  {selectedCategory && (
+                    <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+                      <div className="flex gap-2">
+                        {categories.find(c => c.id === selectedCategory)?.tools.map((tool) => (
+                          <Button
+                            key={tool.id}
+                            variant={selectedTool === tool.id ? "default" : "outline"}
+                            className={selectedTool === tool.id ? "bg-zhiliao-500 text-white" : ""}
+                            onClick={() => setSelectedTool(tool.id)}
+                          >
+                            {tool.name}
+                          </Button>
+                        ))}
                       </div>
-                    )}
-                  </div>
-
-                  {generatedContent && (
-                    <div className={`mt-6 p-4 rounded-lg ${
-                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
-                    }`}>
-                      <h4 className="font-medium mb-2">创作结果</h4>
-                      {/* 根据不同类型展示不同的结果 */}
                     </div>
                   )}
-                </div>
+
+                  {/* 聊天/展示区域 */}
+                  <ScrollArea className="flex-1 p-4">
+                    <div className="space-y-4">
+                      {messages.map((message, index) => (
+                        <div
+                          key={index}
+                          className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div className={`flex items-start space-x-2 max-w-[80%] ${
+                            message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+                          }`}>
+                            <Avatar>
+                              {message.role === 'user' ? (
+                                <div className="h-full w-full rounded-full bg-zhiliao-500 flex items-center justify-center text-white">
+                                  U
+                                </div>
+                              ) : (
+                                <div className="h-full w-full rounded-full bg-slate-500 flex items-center justify-center text-white">
+                                  <Bot className="h-4 w-4" />
+                                </div>
+                              )}
+                            </Avatar>
+                            <div className={`rounded-lg p-3 ${
+                              message.role === 'user'
+                                ? 'bg-zhiliao-500 text-white'
+                                : theme === 'dark'
+                                ? 'bg-slate-700'
+                                : 'bg-slate-100'
+                            }`}>
+                              <p>{message.content}</p>
+                              <div className={`text-xs mt-1 ${
+                                message.role === 'user'
+                                  ? 'text-white/70'
+                                  : 'text-muted-foreground'
+                              }`}>
+                                {message.timestamp.toLocaleTimeString()}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <div ref={messagesEndRef} />
+                    </div>
+                  </ScrollArea>
+
+                  {/* 输入区域 */}
+                  <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+                    <div className="flex space-x-2">
+                      <Input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        placeholder="输入创作提示词..."
+                        className="flex-1"
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

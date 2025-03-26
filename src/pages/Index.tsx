@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@/providers/ThemeProvider';
 import ZhiliaoLogo from '@/components/ZhiliaoLogo';
 import { Button } from '@/components/ui/button';
@@ -20,8 +20,10 @@ import {
   type CarouselApi
 } from "@/components/ui/carousel";
 import Footer from '@/components/Footer';
+import { Badge } from '@/components/ui/badge';
 
 const Index = () => {
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -51,73 +53,13 @@ const Index = () => {
   ];
 
   const cards = [
-    { 
-      title: 'AI 创作中心',
-      description: '一站式AI创作平台，激发无限创意可能',
-      icon: <Brain className="text-zhiliao-500" />,
-      link: '/ai-creation',
-      badge: '新功能',
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995"
-    },
-    { 
+    {
       title: '智能聊天',
-      description: '与 AI 助手实时交流，获取信息与建议',
-      icon: <Bot className="text-zhiliao-500" />,
-      link: '/chat',
-      badge: '热门',
-      image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
-    },
-    { 
-      title: '社群互动',
-      description: '加入感兴趣的群组，认识志同道合的朋友',
-      icon: <Users className="text-zhiliao-500" />,
-      link: '/groups',
-      badge: '推荐',
-      image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1470&auto=format&fit=crop"
-    },
-    { 
-      title: '生活服务',
-      description: '一站式解决餐饮、出行、购物等日常需求',
-      icon: <ShoppingCart className="text-zhiliao-500" />,
-      link: '/services',
-      image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=1470&auto=format&fit=crop"
-    },
-    { 
-      title: '媒体中心',
-      description: '浏览视频、音乐、图片等多媒体内容',
-      icon: <LayoutGrid className="text-zhiliao-500" />,
-      link: '/media',
-      image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1374&auto=format&fit=crop"
-    },
-    { 
-      title: '会员专区',
-      description: '解锁更多高级功能，享受VIP专属特权',
-      icon: <DollarSign className="text-zhiliao-500" />,
-      link: '/membership',
-      badge: '新功能',
-      image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1470&auto=format&fit=crop"
-    },
-    { 
-      title: '心理测评',
-      description: 'MBTI、盖洛普、数字命理全方位测评',
-      icon: <Brain className="text-zhiliao-500" />,
-      link: '/psychology',
-      image: "https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=1470&auto=format&fit=crop"
-    },
-    { 
-      title: '互动影游',
-      description: '沉浸式互动故事，多元结局体验',
-      icon: <Gamepad2 className="text-zhiliao-500" />,
-      link: '/interactive-game',
-      badge: '新功能',
-      image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1471&auto=format&fit=crop"
-    },
-    { 
-      title: '数字人对话',
-      description: '与个性化数字人进行真实互动交流',
+      description: '智能助手，为您解答各种问题',
       icon: <MessageCircle className="text-zhiliao-500" />,
-      link: '/digital-human',
-      image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1470&auto=format&fit=crop"
+      link: '/chat',
+      badge: '推荐',
+      image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
     }
   ];
 
@@ -444,37 +386,42 @@ const Index = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {cards.map((card, index) => (
-            <Link to={card.link} key={index}>
-              <Card className={`h-full transition-all hover:-translate-y-1 hover:shadow-md relative ${theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'hover:bg-slate-50'} overflow-hidden`}>
-                {card.badge && (
-                  <span className="absolute top-3 right-3 bg-zhiliao-500 text-white text-xs px-2 py-1 rounded-full z-10">
-                    {card.badge}
-                  </span>
-                )}
-                {card.image && (
-                  <div className="h-32 w-full overflow-hidden">
-                    <img 
-                      src={card.image} 
-                      alt={card.title} 
-                      className="w-full h-full object-cover transition-transform hover:scale-105"
-                    />
+            <div
+              key={index}
+              className={`group relative overflow-hidden rounded-xl ${
+                theme === 'dark' ? 'bg-slate-800' : 'bg-white'
+              } shadow-lg transition-all hover:shadow-xl`}
+            >
+              <div className="aspect-video w-full overflow-hidden">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    {card.icon}
+                    <h3 className="text-xl font-semibold">{card.title}</h3>
                   </div>
-                )}
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                      {card.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-1">{card.title}</h3>
-                      <p className="text-muted-foreground text-sm">{card.description}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+                  {card.badge && (
+                    <Badge variant="secondary" className="bg-zhiliao-500/10 text-zhiliao-500">
+                      {card.badge}
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-muted-foreground mb-6">{card.description}</p>
+                <Button
+                  className="w-full bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                  onClick={() => navigate(card.link)}
+                >
+                  立即体验
+                </Button>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -584,217 +531,6 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2">AI 创作中心</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            一站式AI创作平台，激发无限创意可能
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className={`rounded-lg p-6 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
-            <h3 className="text-xl font-semibold mb-4">创作面板</h3>
-            
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">选择 AI 工具</label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {aiTools.map((tool) => (
-                    <button
-                      key={tool.key}
-                      onClick={() => {
-                        setSelectedAITool(tool.key);
-                        setSelectedSubTool(null);
-                        setGeneratedContent(null);
-                      }}
-                      className={`p-3 rounded-lg flex flex-col items-center justify-center text-center transition-all ${
-                        selectedAITool === tool.key
-                          ? 'bg-zhiliao-500 text-white'
-                          : theme === 'dark'
-                          ? 'bg-slate-700 hover:bg-slate-600'
-                          : 'bg-slate-100 hover:bg-slate-200'
-                      }`}
-                    >
-                      {tool.icon}
-                      <span className="text-xs mt-1">{tool.title}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {selectedAITool && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">选择模型</label>
-                  <div className="flex flex-wrap gap-2">
-                    {aiTools.find(t => t.key === selectedAITool)?.subTools.map((subTool) => (
-                      <button
-                        key={subTool}
-                        onClick={() => setSelectedSubTool(subTool)}
-                        className={`px-3 py-1 rounded-full text-sm transition-all ${
-                          selectedSubTool === subTool
-                            ? 'bg-zhiliao-500 text-white'
-                            : theme === 'dark'
-                            ? 'bg-slate-700 hover:bg-slate-600'
-                            : 'bg-slate-100 hover:bg-slate-200'
-                        }`}
-                      >
-                        {subTool}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedAITool && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">输入提示词</label>
-                  <textarea
-                    className={`w-full p-3 rounded-lg resize-none ${
-                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
-                    }`}
-                    rows={4}
-                    placeholder={aiTools.find(t => t.key === selectedAITool)?.placeholder}
-                  />
-                </div>
-              )}
-
-              {selectedAITool && selectedSubTool && (
-                <div>
-                  <Button
-                    className="w-full bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
-                    onClick={handleGenerate}
-                    disabled={isGenerating}
-                  >
-                    {isGenerating ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        生成中...
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        开始生成
-                      </>
-                    )}
-                  </Button>
-                  
-                  {isGenerating && (
-                    <div className="mt-4">
-                      <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-zhiliao-500 transition-all duration-300"
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between mt-1 text-sm text-muted-foreground">
-                        <span>生成进度</span>
-                        <span>{Math.round(progress)}%</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className={`rounded-lg p-6 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
-            <h3 className="text-xl font-semibold mb-4">生成结果</h3>
-            
-            {!selectedAITool && (
-              <div className="text-center text-muted-foreground py-12">
-                请选择左侧 AI 工具开始创作
-              </div>
-            )}
-
-            {selectedAITool && !generatedContent && !isGenerating && (
-              <div className="text-center text-muted-foreground py-12">
-                点击"开始生成"按钮生成内容
-              </div>
-            )}
-
-            {isGenerating && (
-              <div className="text-center text-muted-foreground py-12">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                <p>正在生成，请稍候...</p>
-              </div>
-            )}
-
-            {generatedContent && !isGenerating && (
-              <div className="space-y-4">
-                {selectedAITool === 'copywriting' && (
-                  <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                    <p>{generatedContent}</p>
-                  </div>
-                )}
-
-                {(selectedAITool === 'image' || selectedAITool === 'dress-up') && (
-                  <img
-                    src={generatedContent}
-                    alt="生成的图片"
-                    className="w-full rounded-lg"
-                  />
-                )}
-
-                {selectedAITool === 'video' && (
-                  <video
-                    src={generatedContent}
-                    controls
-                    className="w-full rounded-lg"
-                  />
-                )}
-
-                {selectedAITool === 'music' && (
-                  <audio
-                    src={generatedContent}
-                    controls
-                    className="w-full"
-                  />
-                )}
-
-                {selectedAITool === 'lip-sync' && (
-                  <video
-                    src={generatedContent}
-                    controls
-                    className="w-full rounded-lg"
-                  />
-                )}
-
-                {selectedAITool === '3d' && (
-                  <div className="text-center py-8">
-                    <p>3D 模型预览</p>
-                    <a
-                      href={generatedContent}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-zhiliao-500 hover:underline"
-                    >
-                      查看3D模型
-                    </a>
-                  </div>
-                )}
-
-                {selectedAITool === 'workflow' && (
-                  <pre className={`p-4 rounded-lg overflow-auto ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                    <code>{JSON.stringify(JSON.parse(generatedContent), null, 2)}</code>
-                  </pre>
-                )}
-
-                <div className="flex justify-end">
-                  <Button
-                    variant="outline"
-                    onClick={() => setGeneratedContent(null)}
-                    className="text-zhiliao-500"
-                  >
-                    清除结果
-                  </Button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
