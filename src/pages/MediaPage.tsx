@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Play, Image as ImageIcon, Music, Video, Heart, Share2, Download, MoreHorizontal, Pause, Volume2, VolumeX } from 'lucide-react';
 import Header from '../components/Header';
@@ -34,7 +33,7 @@ const MEDIA_ITEMS: MediaItem[] = [
     title: '知了 AI 助手介绍',
     description: '了解知了如何帮助您的日常生活',
     type: 'video',
-    thumbnail: '/lovable-uploads/56fd07c0-da09-4377-9a6d-4041e1dedf45.png',
+    thumbnail: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1470&auto=format&fit=crop',
     author: {
       name: '知了官方',
       avatar: '/lovable-uploads/56fd07c0-da09-4377-9a6d-4041e1dedf45.png',
@@ -48,7 +47,7 @@ const MEDIA_ITEMS: MediaItem[] = [
     title: '数字人技术演示',
     description: '最新数字人技术的展示和应用',
     type: 'video',
-    thumbnail: '/lovable-uploads/6c46fe0c-a9c2-48b7-a27a-471b63da352b.png',
+    thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1474&auto=format&fit=crop',
     author: {
       name: '技术团队',
       avatar: '/lovable-uploads/6c46fe0c-a9c2-48b7-a27a-471b63da352b.png',
@@ -62,7 +61,7 @@ const MEDIA_ITEMS: MediaItem[] = [
     title: '知了产品使用教程',
     description: '学习如何使用知了的各项功能',
     type: 'image',
-    thumbnail: '/lovable-uploads/4b52d5b8-3359-4ad1-aed3-127f979b2490.png',
+    thumbnail: 'https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1470&auto=format&fit=crop',
     author: {
       name: '产品团队',
       avatar: '/lovable-uploads/4b52d5b8-3359-4ad1-aed3-127f979b2490.png',

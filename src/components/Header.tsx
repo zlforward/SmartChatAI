@@ -54,7 +54,22 @@ const Header: React.FC = () => {
             <Link to="/media" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
               媒体中心
             </Link>
+            <Link to="/digital-human" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
+              数字人对话
+            </Link>
+            <Link to="/interactive-game" className="text-foreground/80 hover:text-zhiliao-600 transition-colors duration-200">
+              互动影游
+            </Link>
           </nav>
+          
+          {/* 快速链接 */}
+          <div className="flex items-center space-x-6">
+            <Link to="/" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">首页</Link>
+            <Link to="/ai-assistant" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">AI 助手</Link>
+            <Link to="/media" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">媒体中心</Link>
+            <Link to="/digital-human" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">数字人对话</Link>
+            <Link to="/interactive-game" className="text-sm font-medium hover:text-zhiliao-500 whitespace-nowrap">互动影游</Link>
+          </div>
           
           <div className="hidden md:flex items-center space-x-2">
             <Button 
@@ -137,6 +152,20 @@ const Header: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               媒体中心
+            </Link>
+            <Link 
+              to="/digital-human" 
+              className="block py-2 text-foreground/80 hover:text-zhiliao-600"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              数字人对话
+            </Link>
+            <Link 
+              to="/interactive-game" 
+              className="block py-2 text-foreground/80 hover:text-zhiliao-600"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              互动影游
             </Link>
             <div className="flex flex-col gap-2 pt-2">
               <Link to="/login" className="w-full">

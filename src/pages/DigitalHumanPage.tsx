@@ -1,180 +1,71 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTheme } from '@/providers/ThemeProvider';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { 
-  Send, Sparkles, User, Bot, Image as ImageIcon, 
-  Mic, Download, Save, Settings, RefreshCw, Heart
-} from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Slider } from '@/components/ui/slider';
+import { 
+  Send, 
+  Mic, 
+  Video, 
+  Phone, 
+  MoreVertical,
+  Smile,
+  Image as ImageIcon,
+  ThumbsUp,
+  MessageSquare,
+  Share2
+} from 'lucide-react';
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
-  characterId?: string;
+  sender: 'user' | 'digital-human';
+  timestamp: string;
 }
-
-interface Character {
-  id: string;
-  name: string;
-  avatar: string;
-  description: string;
-  personality: string;
-  tags: string[];
-  isLocked?: boolean;
-}
-
-const characters: Character[] = [
-  {
-    id: 'xiaoli',
-    name: '小李',
-    avatar: '/lovable-uploads/b9e7d957-a3f2-4532-acbd-f553dbb3fb7e.png',
-    description: '活泼开朗的大学生，喜欢旅行和摄影',
-    personality: '开朗、幽默、善良',
-    tags: ['学生', '摄影', '旅行'],
-  },
-  {
-    id: 'xiaohua',
-    name: '小华',
-    avatar: '/lovable-uploads/4458c132-3b6e-4868-85a1-74dbba55cbf4.png',
-    description: '温柔体贴的邻家女孩，热爱烹饪和阅读',
-    personality: '温柔、细心、善解人意',
-    tags: ['烹饪', '阅读', '音乐'],
-  },
-  {
-    id: 'ming',
-    name: '小明',
-    avatar: '/lovable-uploads/232fc626-1664-454e-8e3e-0923f5e06e88.png',
-    description: '沉稳可靠的职场精英，对工作充满热情',
-    personality: '理性、专注、可靠',
-    tags: ['职场', '管理', '科技'],
-  },
-  {
-    id: 'qian',
-    name: '小倩',
-    avatar: '/lovable-uploads/b1b190bf-c614-48aa-97c4-9fbc5020f562.png',
-    description: '知性优雅的艺术家，擅长古典音乐和绘画',
-    personality: '优雅、内敛、艺术气息',
-    tags: ['艺术', '音乐', '绘画'],
-  },
-  {
-    id: 'jiajia',
-    name: '佳佳',
-    avatar: '/lovable-uploads/c2ef1a30-490f-463e-a15f-993bdd5edbc1.png',
-    description: '阳光活力的运动达人，热爱户外和健身',
-    personality: '阳光、积极、乐观',
-    tags: ['运动', '健身', '户外'],
-  },
-  {
-    id: 'lingling',
-    name: '玲玲',
-    avatar: '/lovable-uploads/ccde4be5-7f09-4c6b-a189-55b4670d5c54.png',
-    description: '甜美可爱的邻家女孩，喜欢烘焙和手工',
-    personality: '甜美、细腻、创意',
-    tags: ['烘焙', '手工', '时尚'],
-  },
-  {
-    id: 'premium1',
-    name: '晓晓',
-    avatar: '/lovable-uploads/805023d1-9177-408a-8fbf-d57b4a262294.png',
-    description: '优雅知性的文学爱好者，喜欢诗词和古典文化',
-    personality: '知性、典雅、内敛',
-    tags: ['文学', '古典', '诗词'],
-    isLocked: true,
-  },
-  {
-    id: 'premium2',
-    name: '冰冰',
-    avatar: '/lovable-uploads/03eaebdf-e4b1-442e-8287-c07f07a5cfa2.png',
-    description: '干练利落的职场精英，擅长沟通和管理',
-    personality: '干练、自信、专业',
-    tags: ['职场', '领导力', '商务'],
-    isLocked: true,
-  },
-];
-
-const initialMessages: Message[] = [
-  {
-    id: '1',
-    role: 'assistant',
-    content: '你好！我是小李，很高兴认识你！今天有什么我可以帮助你的吗？',
-    timestamp: new Date(),
-    characterId: 'xiaoli',
-  },
-];
 
 const DigitalHumanPage: React.FC = () => {
   const { theme } = useTheme();
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [inputMessage, setInputMessage] = useState('');
-  const [activeCharacter, setActiveCharacter] = useState<Character>(characters[0]);
-  const [showSettings, setShowSettings] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content: '你好！我是知了AI数字人，很高兴为你服务。',
+      sender: 'digital-human',
+      timestamp: new Date().toISOString(),
+    },
+  ]);
+  const [input, setInput] = useState('');
+  const [isMic, setIsMic] = useState(false);
+  const [isVideo, setIsVideo] = useState(false);
+  const [isCalling, setIsCalling] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = () => {
-    if (!inputMessage.trim()) return;
+    if (!input.trim()) return;
 
-    const newUserMessage: Message = {
+    const newMessage: Message = {
       id: Date.now().toString(),
-      role: 'user',
-      content: inputMessage,
-      timestamp: new Date(),
+      content: input,
+      sender: 'user',
+      timestamp: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
     };
 
-    const newAssistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: 'assistant',
-      content: getRandomResponse(inputMessage, activeCharacter),
-      timestamp: new Date(Date.now() + 1000),
-      characterId: activeCharacter.id,
-    };
+    setMessages(prev => [...prev, newMessage]);
+    setInput('');
 
-    setMessages([...messages, newUserMessage, newAssistantMessage]);
-    setInputMessage('');
-  };
-
-  const getRandomResponse = (message: string, character: Character): string => {
-    const responses = [
-      `我理解你的意思了！作为${character.personality}的${character.name}，我想说这个问题很有趣。`,
-      `嗯，这是个好问题！让我思考一下...作为一个${character.tags.join('、')}爱好者，我认为...`,
-      `谢谢你的分享！我很喜欢和你聊天。关于这个话题，我有一些想法...`,
-      `作为${character.description}，我对这个话题很感兴趣！我认为...`,
-      `我明白了，你说的是关于"${message.substring(0, 10)}..."的问题。这让我想到...`,
-    ];
-    
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
-
-  const handleCharacterChange = (character: Character) => {
-    if (character.isLocked) {
-      return; // 如果角色被锁定，不做任何操作
-    }
-    
-    setActiveCharacter(character);
-    setMessages([
-      {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: `你好！我是${character.name}，${character.description}。很高兴认识你！有什么我可以帮助你的吗？`,
-        timestamp: new Date(),
-        characterId: character.id,
-      },
-    ]);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSendMessage();
-    }
+    // 模拟数字人回复
+    setTimeout(() => {
+      const reply: Message = {
+        id: (Date.now() + 1).toString(),
+        content: '我理解你的想法，让我来为你解答这个问题。',
+        sender: 'digital-human',
+        timestamp: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, reply]);
+    }, 1000);
   };
 
   return (
@@ -182,290 +73,215 @@ const DigitalHumanPage: React.FC = () => {
       <Header />
       <div className="container mx-auto px-4 pt-24 pb-16">
         <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="chat">
-            <TabsList className="mb-6 grid w-full grid-cols-2">
-              <TabsTrigger value="chat">
-                <MessageCircleIcon className="h-4 w-4 mr-2" />
-                数字人对话
-              </TabsTrigger>
-              <TabsTrigger value="characters">
-                <Users className="h-4 w-4 mr-2" />
-                角色库
-              </TabsTrigger>
-            </TabsList>
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">数字人对话</h1>
+            <p className="text-muted-foreground">
+              与个性化数字人进行真实互动交流
+            </p>
+          </div>
 
-            <TabsContent value="chat" className="space-y-4">
-              <div className="flex flex-col md:flex-row gap-4 h-[70vh]">
-                <div className="md:w-1/4 space-y-4">
-                  <Card className={theme === 'dark' ? 'bg-slate-800' : ''}>
-                    <CardContent className="p-4">
-                      <div className="flex flex-col items-center text-center">
-                        <Avatar className="h-24 w-24 mb-4">
-                          <AvatarImage src={activeCharacter.avatar} />
-                          <AvatarFallback>{activeCharacter.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <h2 className="text-xl font-bold mb-1">{activeCharacter.name}</h2>
-                        <p className="text-sm text-muted-foreground mb-2">{activeCharacter.description}</p>
-                        <div className="flex flex-wrap gap-1 justify-center mb-4">
-                          {activeCharacter.tags.map((tag, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2">
+              <Card className={`${theme === 'dark' ? 'bg-slate-800' : ''}`}>
+                <CardContent className="p-0">
+                  <div className="flex flex-col h-[600px]">
+                    {/* 视频区域 */}
+                    <div className="relative aspect-video bg-gradient-to-b from-slate-900 to-slate-800 rounded-t-lg overflow-hidden">
+                      {/* 背景图片 */}
+                      <div className="absolute inset-0">
+                        <img 
+                          src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png" 
+                          alt="背景" 
+                          className="w-full h-full object-cover opacity-20 animate-zoom"
+                        />
+                        {/* 科技感遮罩 */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 to-slate-800/80">
+                          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,68,68,0.1)_25%,rgba(68,68,68,0.1)_50%,transparent_50%,transparent_75%,rgba(68,68,68,0.1)_75%,rgba(68,68,68,0.1)_100%)] bg-[length:20px_20px] animate-grid" />
                         </div>
+                        {/* 科技线条 */}
+                        <div className="absolute inset-0">
+                          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-zhiliao-500/50 to-transparent animate-scan" />
+                          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-zhiliao-500/50 to-transparent animate-scan" style={{ animationDelay: '1s' }} />
+                        </div>
+                      </div>
+
+                      {/* 数字人显示区域 */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="relative w-full h-full max-w-2xl">
+                          {/* 全息投影效果 */}
+                          <div className="absolute inset-0 bg-gradient-to-b from-zhiliao-500/10 to-transparent animate-pulse" />
+                          
+                          <video
+                            className="w-full h-full object-contain"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                          >
+                            <source src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png" type="image/png" />
+                            <img 
+                              src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png" 
+                              alt="数字人形象" 
+                              className={`w-full h-full object-contain transition-all duration-300 ${
+                                isCalling ? 'animate-talking' : 
+                                isVideo ? 'animate-video' : 
+                                isMic ? 'animate-listening' : ''
+                              }`}
+                            />
+                          </video>
+
+                          {/* 全息投影装饰 */}
+                          <div className="absolute inset-0">
+                            <div className="absolute top-0 left-0 w-32 h-32 bg-zhiliao-500/10 rounded-full blur-3xl animate-pulse" />
+                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-zhiliao-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 视频控制按钮 */}
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center space-x-4">
                         <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="w-full"
-                          onClick={() => setShowSettings(!showSettings)}
+                          size="icon" 
+                          variant="secondary" 
+                          className={`rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors ${
+                            isMic ? 'bg-zhiliao-500/20' : ''
+                          }`}
+                          onClick={() => setIsMic(!isMic)}
                         >
-                          <Settings className="h-4 w-4 mr-2" />
-                          角色设置
+                          <Mic className="h-5 w-5" />
+                        </Button>
+                        <Button 
+                          size="icon" 
+                          variant="secondary" 
+                          className={`rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors ${
+                            isVideo ? 'bg-zhiliao-500/20' : ''
+                          }`}
+                          onClick={() => setIsVideo(!isVideo)}
+                        >
+                          <Video className="h-5 w-5" />
+                        </Button>
+                        <Button 
+                          size="icon" 
+                          variant="secondary" 
+                          className={`rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors ${
+                            isCalling ? 'bg-zhiliao-500/20' : ''
+                          }`}
+                          onClick={() => setIsCalling(!isCalling)}
+                        >
+                          <Phone className="h-5 w-5" />
                         </Button>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
 
-                  {showSettings && (
-                    <Card className={theme === 'dark' ? 'bg-slate-800' : ''}>
-                      <CardContent className="p-4 space-y-4">
-                        <div>
-                          <h3 className="text-sm font-medium mb-2">对话温度</h3>
-                          <Slider defaultValue={[70]} max={100} step={10} />
-                          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                            <span>精确</span>
-                            <span>创意</span>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-sm font-medium mb-2">记忆长度</h3>
-                          <Slider defaultValue={[5]} max={10} step={1} />
-                          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                            <span>短期</span>
-                            <span>长期</span>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-sm font-medium mb-2">回复长度</h3>
-                          <Slider defaultValue={[3]} max={5} step={1} />
-                          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                            <span>简短</span>
-                            <span>详细</span>
-                          </div>
-                        </div>
-                        
-                        <div className="pt-2">
-                          <Button size="sm" variant="outline" className="w-full">
-                            <RefreshCw className="h-4 w-4 mr-2" />
-                            重置设置
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-
-                <div className="md:w-3/4 flex flex-col h-full">
-                  <Card className={`flex-1 ${theme === 'dark' ? 'bg-slate-800' : ''}`}>
-                    <CardContent className="p-4 h-full">
-                      <ScrollArea className="h-[calc(70vh-120px)] pr-4">
-                        <div className="space-y-4">
-                          {messages.map((message) => (
-                            <div 
-                              key={message.id} 
-                              className={`flex ${
-                                message.role === 'user' ? 'justify-end' : 'justify-start'
-                              }`}
-                            >
-                              <div className="flex items-start max-w-[80%] gap-3">
-                                {message.role === 'assistant' && (
-                                  <Avatar className="h-8 w-8 mt-1">
-                                    <AvatarImage 
-                                      src={
-                                        characters.find(c => c.id === message.characterId)?.avatar || 
-                                        activeCharacter.avatar
-                                      } 
-                                    />
-                                    <AvatarFallback>AI</AvatarFallback>
-                                  </Avatar>
-                                )}
-                                
-                                <div 
-                                  className={`rounded-lg px-4 py-2 ${
-                                    message.role === 'user' 
-                                      ? 'bg-zhiliao-500 text-white' 
-                                      : theme === 'dark' 
-                                        ? 'bg-slate-700' 
-                                        : 'bg-slate-100'
-                                  }`}
-                                >
-                                  <p>{message.content}</p>
-                                  <div className="text-xs opacity-70 mt-1 text-right">
-                                    {message.timestamp.toLocaleTimeString([], {
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                    })}
-                                  </div>
-                                </div>
-                                
-                                {message.role === 'user' && (
-                                  <Avatar className="h-8 w-8 mt-1">
-                                    <AvatarImage src="" />
-                                    <AvatarFallback>
-                                      <User className="h-4 w-4" />
-                                    </AvatarFallback>
-                                  </Avatar>
-                                )}
+                    {/* 消息区域 */}
+                    <ScrollArea className="flex-1 p-4">
+                      <div className="space-y-4 flex flex-col-reverse">
+                        {messages.slice().reverse().map((message) => (
+                          <div
+                            key={message.id}
+                            className={`flex items-start space-x-3 ${
+                              message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+                            }`}
+                          >
+                            <div className="flex-shrink-0">
+                              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-zhiliao-500/20">
+                                <img
+                                  src={message.sender === 'user' ? '/images/avatar.png' : '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'}
+                                  alt={message.sender === 'user' ? '用户头像' : '数字人头像'}
+                                  className="w-full h-full object-cover"
+                                />
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
+                            <div 
+                              className={`max-w-[70%] rounded-2xl px-4 py-2 shadow-sm ${
+                                message.sender === 'user'
+                                  ? 'bg-zhiliao-500 text-white rounded-tr-none'
+                                  : theme === 'dark'
+                                    ? 'bg-slate-700 rounded-tl-none'
+                                    : 'bg-slate-100 rounded-tl-none'
+                              }`}
+                            >
+                              <p className="text-sm leading-relaxed">{message.content}</p>
+                              <span className="text-xs opacity-70 mt-1 block text-right">{message.timestamp}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
 
-                  <div className="flex items-center gap-2 mt-4">
-                    <Button variant="outline" size="icon">
-                      <ImageIcon className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon">
-                      <Mic className="h-4 w-4" />
-                    </Button>
-                    <Input 
-                      placeholder="输入消息..." 
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="flex-1"
-                    />
-                    <Button onClick={handleSendMessage}>
-                      <Send className="h-4 w-4 mr-2" />
-                      发送
-                    </Button>
+                    {/* 输入区域 */}
+                    <div className="p-4 border-t bg-card/50 backdrop-blur-sm">
+                      <div className="flex items-center space-x-2">
+                        <Button size="icon" variant="ghost" className="text-foreground/70 hover:text-zhiliao-500">
+                          <Smile className="h-5 w-5" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="text-foreground/70 hover:text-zhiliao-500">
+                          <ImageIcon className="h-5 w-5" />
+                        </Button>
+                        <Input
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                          placeholder="输入消息..."
+                          className="bg-background/50"
+                          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        />
+                        <Button onClick={handleSendMessage} className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white">
+                          <Send className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 侧边栏 */}
+            <div className="w-80 flex-shrink-0 border-l">
+              <div className="p-4">
+                {/* 用户信息卡片 */}
+                <div className="bg-card rounded-lg p-4 space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-zhiliao-500/20">
+                      <img
+                        src="/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png"
+                        alt="知了AI助手"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">知了AI助手</h3>
+                      <p className="text-sm text-foreground/70">在线</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </TabsContent>
 
-            <TabsContent value="characters">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {characters.map((character) => (
-                  <Card 
-                    key={character.id} 
-                    className={`overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${
-                      activeCharacter.id === character.id ? 'ring-2 ring-zhiliao-500' : ''
-                    } ${theme === 'dark' ? 'bg-slate-800' : ''}`}
-                    onClick={() => handleCharacterChange(character)}
-                  >
-                    <CardContent className="p-0">
-                      <div className="relative aspect-square overflow-hidden">
-                        <img 
-                          src={character.avatar} 
-                          alt={character.name} 
-                          className="object-cover w-full h-full"
-                        />
-                        {character.isLocked && (
-                          <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
-                            <Lock className="h-8 w-8 mb-2" />
-                            <span className="text-sm font-medium">会员专享</span>
-                            <Button size="sm" variant="outline" className="mt-2 text-white border-white">
-                              升级会员
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="font-bold">{character.name}</h3>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                          {character.description}
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {character.tags.map((tag, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                <Card className={`${theme === 'dark' ? 'bg-slate-800' : ''}`}>
+                  <CardContent className="p-4">
+                    <h3 className="font-medium mb-4">互动功能</h3>
+                    <div className="space-y-2">
+                      <Button variant="outline" className="w-full justify-start">
+                        <ThumbsUp className="h-4 w-4 mr-2" />
+                        点赞
+                      </Button>
+                      <Button variant="outline" className="w-full justify-start">
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        评论
+                      </Button>
+                      <Button variant="outline" className="w-full justify-start">
+                        <Share2 className="h-4 w-4 mr-2" />
+                        分享
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </div>
       </div>
       <Footer />
     </div>
   );
 };
-
-function MessageCircleIcon(props: React.ComponentProps<'svg'>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-    </svg>
-  );
-}
-
-function Users(props: React.ComponentProps<'svg'>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-
-function Lock(props: React.ComponentProps<'svg'>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
-  );
-}
 
 export default DigitalHumanPage;

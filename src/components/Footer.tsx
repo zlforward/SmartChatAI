@@ -29,35 +29,13 @@ const Footer: React.FC = () => {
           
           {/* Quick Links */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">快速链接</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link to="/about" className="text-muted-foreground hover:text-foreground">
-                    关于我们
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/terms" className="text-muted-foreground hover:text-foreground">
-                    服务条款
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/privacy" className="text-muted-foreground hover:text-foreground">
-                    隐私政策
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/faq" className="text-muted-foreground hover:text-foreground">
-                    常见问题
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/contact" className="text-muted-foreground hover:text-foreground">
-                    联系我们
-                  </Link>
-                </li>
-              </ul>
+            <div className="flex flex-col space-y-4">
+              <h3 className="text-lg font-semibold whitespace-nowrap">快速链接</h3>
+              <Link to="/" className="text-sm text-foreground/70 hover:text-zhiliao-500 whitespace-nowrap">关于我们</Link>
+              <Link to="/terms" className="text-sm text-foreground/70 hover:text-zhiliao-500 whitespace-nowrap">服务条款</Link>
+              <Link to="/privacy" className="text-sm text-foreground/70 hover:text-zhiliao-500 whitespace-nowrap">隐私政策</Link>
+              <Link to="/faq" className="text-sm text-foreground/70 hover:text-zhiliao-500 whitespace-nowrap">常见问题</Link>
+              <Link to="/contact" className="text-sm text-foreground/70 hover:text-zhiliao-500 whitespace-nowrap">联系我们</Link>
             </div>
           </div>
           

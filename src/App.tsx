@@ -28,6 +28,9 @@ const NewsPage = React.lazy(() => import('./pages/NewsPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const HelpPage = React.lazy(() => import('./pages/HelpPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
+const MediaPage = React.lazy(() => import('./pages/MediaPage'));
+const InteractiveGamePage = React.lazy(() => import('./pages/InteractiveGamePage'));
+const DigitalHumanPage = React.lazy(() => import('./pages/DigitalHumanPage'));
 
 const App = () => {
   return (
@@ -44,12 +47,15 @@ const App = () => {
                 <Route path="/radar" element={<RadarPage />} />
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/membership" element={<MembershipPage />} />
-                <Route path="/user" element={<UserCenterPage />} />
+                <Route path="/user-center" element={<UserCenterPage />} />
                 <Route path="/psychology" element={<PsychologyPage />} />
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/news" element={<NewsPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/help" element={<HelpPage />} />
+                <Route path="/media" element={<MediaPage />} />
+                <Route path="/interactive-game" element={<InteractiveGamePage />} />
+                <Route path="/digital-human" element={<DigitalHumanPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/terms" element={<TermsPage />} />
