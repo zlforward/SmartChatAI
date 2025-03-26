@@ -8,7 +8,8 @@ import {
   ArrowRight, Bot, MessageCircle, Users, LayoutGrid, 
   Video, Music, ShoppingCart, Calendar, Play, Pause,
   Brain, DollarSign, Gamepad2, Sun, Moon, Image, FileText,
-  Workflow, Clapperboard, Mic, User, Box, Brush
+  Workflow, Clapperboard, Mic, User, Box, Brush, ChevronDown,
+  Loader2, Check, RefreshCw
 } from 'lucide-react';
 import { 
   Carousel, 
@@ -25,6 +26,11 @@ const Index = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+  const [selectedAITool, setSelectedAITool] = useState<string | null>(null);
+  const [selectedSubTool, setSelectedSubTool] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [generatedContent, setGeneratedContent] = useState<any>(null);
 
   const videos = [
     {
@@ -107,70 +113,86 @@ const Index = () => {
     }
   ];
 
-  const aiFeatures = [
+  const aiTools = [
     {
       title: 'AI 生文案',
       description: '智能文案创作，多场景文本生成',
       icon: <FileText className="text-zhiliao-500" />,
-      link: '/ai/copywriting',
-      tools: ['GPT-4', 'Claude', 'Gemini'],
-      image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1000"
+      key: 'copywriting',
+      subTools: ['GPT-4', 'Claude', 'Gemini'],
+      placeholder: '请输入文案主题或关键词...',
+      generateTime: 15,
+      sampleOutput: '匠心精神，传承创新。我们始终坚持以客户为中心，追求卓越品质，用创新思维推动行业发展...'
     },
     {
       title: 'AI 生图片',
       description: '高质量图像生成与编辑',
       icon: <Image className="text-zhiliao-500" />,
-      link: '/ai/image',
-      tools: ['SD', 'LUMIA', 'COMFYUI', 'FLUX'],
-      image: "https://images.unsplash.com/photo-1519638831568-d9897f54ed69?q=80&w=1000"
+      key: 'image',
+      subTools: ['SD', 'LUMIA', 'COMFYUI', 'FLUX'],
+      placeholder: '请输入图片描述...',
+      generateTime: 20,
+      sampleOutput: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69'
     },
     {
       title: 'AI 生视频',
       description: '智能视频创作与编辑',
       icon: <Clapperboard className="text-zhiliao-500" />,
-      link: '/ai/video',
-      tools: ['可灵', '即梦', '海螺', 'vidu'],
-      image: "https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=1000"
+      key: 'video',
+      subTools: ['可灵', '即梦', '海螺', 'vidu'],
+      placeholder: '请输入视频场景描述...',
+      generateTime: 30,
+      sampleOutput: 'https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-a-breeze-1188-large.mp4'
     },
     {
       title: 'AI 生音乐',
       description: '智能音乐创作与编曲',
       icon: <Music className="text-zhiliao-500" />,
-      link: '/ai/music',
-      tools: ['海绵', 'suno', 'udio'],
-      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1000"
+      key: 'music',
+      subTools: ['海绵', 'suno', 'udio'],
+      placeholder: '请输入音乐风格或情绪...',
+      generateTime: 25,
+      sampleOutput: 'https://example.com/sample-music.mp3'
     },
     {
       title: 'AI 对口型',
       description: '智能语音唇形同步',
       icon: <Mic className="text-zhiliao-500" />,
-      link: '/ai/lip-sync',
-      tools: ['wav2lip', 'SadTalker'],
-      image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1000"
+      key: 'lip-sync',
+      subTools: ['wav2lip', 'SadTalker'],
+      placeholder: '请上传视频和音频文件...',
+      generateTime: 35,
+      sampleOutput: 'https://example.com/sample-lip-sync.mp4'
     },
     {
       title: 'AI 换装',
       description: '智能服装搭配与换装',
       icon: <User className="text-zhiliao-500" />,
-      link: '/ai/dress-up',
-      tools: ['DressFormer', 'VITON'],
-      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000"
+      key: 'dress-up',
+      subTools: ['DressFormer', 'VITON'],
+      placeholder: '请上传人物照片和目标服装...',
+      generateTime: 20,
+      sampleOutput: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d'
     },
     {
       title: 'AI 生3D资产',
       description: '3D模型与场景生成',
       icon: <Box className="text-zhiliao-500" />,
-      link: '/ai/3d',
-      tools: ['混元', 'tripo', 'meshy'],
-      image: "https://images.unsplash.com/photo-1525434280327-e525e03f17ef?q=80&w=1000"
+      key: '3d',
+      subTools: ['混元', 'tripo', 'meshy'],
+      placeholder: '请输入3D模型描述...',
+      generateTime: 40,
+      sampleOutput: 'https://example.com/sample-3d-model.glb'
     },
     {
       title: 'AI 工作流',
       description: '自定义AI工作流程',
       icon: <Workflow className="text-zhiliao-500" />,
-      link: '/ai/workflow',
-      tools: ['n8n', 'Zapier', 'Make'],
-      image: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1000"
+      key: 'workflow',
+      subTools: ['n8n', 'Zapier', 'Make'],
+      placeholder: '请描述您的工作流程...',
+      generateTime: 10,
+      sampleOutput: '{"workflow": "email_to_notion", "steps": ["trigger_email", "extract_data", "create_page"]}'
     }
   ];
 
@@ -250,6 +272,31 @@ const Index = () => {
     }
     setActiveVideoIndex(index);
     setIsPlaying(false);
+  };
+
+  const handleGenerate = async () => {
+    const selectedTool = aiTools.find(tool => tool.key === selectedAITool);
+    if (!selectedTool || !selectedSubTool) return;
+
+    setIsGenerating(true);
+    setProgress(0);
+
+    const totalTime = selectedTool.generateTime * 1000; // 转换为毫秒
+    const intervalTime = 100; // 每100毫秒更新一次进度
+    const steps = totalTime / intervalTime;
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+      currentStep++;
+      const newProgress = Math.min((currentStep / steps) * 100, 100);
+      setProgress(newProgress);
+
+      if (currentStep >= steps) {
+        clearInterval(interval);
+        setIsGenerating(false);
+        setGeneratedContent(selectedTool.sampleOutput);
+      }
+    }, intervalTime);
   };
 
   return (
@@ -541,70 +588,205 @@ const Index = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {aiFeatures.map((feature, index) => (
-            <Link to={feature.link} key={index}>
-              <Card className={`h-full transition-all hover:-translate-y-1 hover:shadow-md ${theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'hover:bg-slate-50'}`}>
-                <div className="h-40 w-full overflow-hidden">
-                  <img 
-                    src={feature.image} 
-                    alt={feature.title} 
-                    className="w-full h-full object-cover transition-transform hover:scale-105"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                      {feature.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-1">{feature.title}</h3>
-                      <p className="text-muted-foreground text-sm mb-2">{feature.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {feature.tools.map((tool, i) => (
-                          <span key={i} className="text-xs px-2 py-1 rounded-full bg-zhiliao-100 text-zhiliao-700">
-                            {tool}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className={`py-12 ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-50'}`}>
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-2">AI 作品展示</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              探索AI创作的无限可能
-            </p>
-          </div>
-          
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
-            {aiWorks.map((work, index) => (
-              <div 
-                key={index} 
-                className={`break-inside-avoid rounded-lg overflow-hidden ${theme === 'dark' ? 'bg-slate-700' : 'bg-white'} shadow-lg`}
-              >
-                <img 
-                  src={work.image} 
-                  alt={work.title} 
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <span className={`text-xs px-2 py-1 rounded-full ${theme === 'dark' ? 'bg-slate-600' : 'bg-slate-100'}`}>
-                    {work.type}
-                  </span>
-                  <h3 className="font-semibold mt-2">{work.title}</h3>
-                  <p className="text-sm text-muted-foreground">{work.content}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className={`rounded-lg p-6 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
+            <h3 className="text-xl font-semibold mb-4">创作面板</h3>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">选择 AI 工具</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {aiTools.map((tool) => (
+                    <button
+                      key={tool.key}
+                      onClick={() => {
+                        setSelectedAITool(tool.key);
+                        setSelectedSubTool(null);
+                        setGeneratedContent(null);
+                      }}
+                      className={`p-3 rounded-lg flex flex-col items-center justify-center text-center transition-all ${
+                        selectedAITool === tool.key
+                          ? 'bg-zhiliao-500 text-white'
+                          : theme === 'dark'
+                          ? 'bg-slate-700 hover:bg-slate-600'
+                          : 'bg-slate-100 hover:bg-slate-200'
+                      }`}
+                    >
+                      {tool.icon}
+                      <span className="text-xs mt-1">{tool.title}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
-            ))}
+
+              {selectedAITool && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">选择模型</label>
+                  <div className="flex flex-wrap gap-2">
+                    {aiTools.find(t => t.key === selectedAITool)?.subTools.map((subTool) => (
+                      <button
+                        key={subTool}
+                        onClick={() => setSelectedSubTool(subTool)}
+                        className={`px-3 py-1 rounded-full text-sm transition-all ${
+                          selectedSubTool === subTool
+                            ? 'bg-zhiliao-500 text-white'
+                            : theme === 'dark'
+                            ? 'bg-slate-700 hover:bg-slate-600'
+                            : 'bg-slate-100 hover:bg-slate-200'
+                        }`}
+                      >
+                        {subTool}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedAITool && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">输入提示词</label>
+                  <textarea
+                    className={`w-full p-3 rounded-lg resize-none ${
+                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
+                    }`}
+                    rows={4}
+                    placeholder={aiTools.find(t => t.key === selectedAITool)?.placeholder}
+                  />
+                </div>
+              )}
+
+              {selectedAITool && selectedSubTool && (
+                <div>
+                  <Button
+                    className="w-full bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                    onClick={handleGenerate}
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        生成中...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        开始生成
+                      </>
+                    )}
+                  </Button>
+                  
+                  {isGenerating && (
+                    <div className="mt-4">
+                      <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-zhiliao-500 transition-all duration-300"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between mt-1 text-sm text-muted-foreground">
+                        <span>生成进度</span>
+                        <span>{Math.round(progress)}%</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={`rounded-lg p-6 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
+            <h3 className="text-xl font-semibold mb-4">生成结果</h3>
+            
+            {!selectedAITool && (
+              <div className="text-center text-muted-foreground py-12">
+                请选择左侧 AI 工具开始创作
+              </div>
+            )}
+
+            {selectedAITool && !generatedContent && !isGenerating && (
+              <div className="text-center text-muted-foreground py-12">
+                点击"开始生成"按钮生成内容
+              </div>
+            )}
+
+            {isGenerating && (
+              <div className="text-center text-muted-foreground py-12">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                <p>正在生成，请稍候...</p>
+              </div>
+            )}
+
+            {generatedContent && !isGenerating && (
+              <div className="space-y-4">
+                {selectedAITool === 'copywriting' && (
+                  <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                    <p>{generatedContent}</p>
+                  </div>
+                )}
+
+                {(selectedAITool === 'image' || selectedAITool === 'dress-up') && (
+                  <img
+                    src={generatedContent}
+                    alt="生成的图片"
+                    className="w-full rounded-lg"
+                  />
+                )}
+
+                {selectedAITool === 'video' && (
+                  <video
+                    src={generatedContent}
+                    controls
+                    className="w-full rounded-lg"
+                  />
+                )}
+
+                {selectedAITool === 'music' && (
+                  <audio
+                    src={generatedContent}
+                    controls
+                    className="w-full"
+                  />
+                )}
+
+                {selectedAITool === 'lip-sync' && (
+                  <video
+                    src={generatedContent}
+                    controls
+                    className="w-full rounded-lg"
+                  />
+                )}
+
+                {selectedAITool === '3d' && (
+                  <div className="text-center py-8">
+                    <p>3D 模型预览</p>
+                    <a
+                      href={generatedContent}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zhiliao-500 hover:underline"
+                    >
+                      查看3D模型
+                    </a>
+                  </div>
+                )}
+
+                {selectedAITool === 'workflow' && (
+                  <pre className={`p-4 rounded-lg overflow-auto ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                    <code>{JSON.stringify(JSON.parse(generatedContent), null, 2)}</code>
+                  </pre>
+                )}
+
+                <div className="flex justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={() => setGeneratedContent(null)}
+                    className="text-zhiliao-500"
+                  >
+                    清除结果
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
