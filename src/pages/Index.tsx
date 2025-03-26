@@ -54,12 +54,49 @@ const Index = () => {
 
   const cards = [
     {
-      title: '智能聊天',
-      description: '智能助手，为您解答各种问题',
-      icon: <MessageCircle className="text-zhiliao-500" />,
-      link: '/chat',
+      title: 'AI 创作中心',
+      description: '一站式AI创作平台，激发无限创意可能',
+      icon: <Brain className="text-zhiliao-500" />,
+      link: '/ai-creation',
       badge: '推荐',
-      image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625"
+      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995"
+    },
+    {
+      title: '社群组织',
+      description: '加入感兴趣的群组，认识志同道合的朋友',
+      icon: <Users className="text-zhiliao-500" />,
+      link: '/groups',
+      badge: '热门',
+      image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b"
+    },
+    {
+      title: '本地服务',
+      description: '一站式解决餐饮、出行、购物等日常需求',
+      icon: <ShoppingCart className="text-zhiliao-500" />,
+      link: '/services',
+      image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26"
+    },
+    {
+      title: '媒体中心',
+      description: '浏览视频、音乐、图片等多媒体内容',
+      icon: <LayoutGrid className="text-zhiliao-500" />,
+      link: '/media',
+      image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7"
+    },
+    {
+      title: '数字人对话',
+      description: '与个性化数字人进行真实互动交流',
+      icon: <User className="text-zhiliao-500" />,
+      link: '/digital-human',
+      badge: '新功能',
+      image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5"
+    },
+    {
+      title: '互动影游',
+      description: '沉浸式互动故事，多元结局体验',
+      icon: <Gamepad2 className="text-zhiliao-500" />,
+      link: '/interactive-game',
+      image: "https://images.unsplash.com/photo-1511512578047-dfb367046420"
     }
   ];
 

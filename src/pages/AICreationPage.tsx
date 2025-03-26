@@ -16,15 +16,52 @@ interface Message {
   timestamp: Date;
 }
 
+interface GeneratedContent {
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  image?: string;
+  video?: string;
+  audio?: string;
+  timestamp: Date;
+}
+
 const AICreationPage = () => {
   const { theme } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [generatedContent, setGeneratedContent] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [generatedContents, setGeneratedContents] = useState<GeneratedContent[]>([
+    {
+      id: '1',
+      type: 'image',
+      title: '未来城市',
+      content: 'AI生成的未来科技城市场景',
+      image: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69',
+      timestamp: new Date()
+    },
+    {
+      id: '2',
+      type: 'video',
+      title: '产品展示',
+      content: '智能生成的产品3D展示视频',
+      video: 'https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-a-breeze-1188-large.mp4',
+      timestamp: new Date()
+    },
+    {
+      id: '3',
+      type: 'music',
+      title: '电子音乐',
+      content: 'AI作曲的电子音乐作品',
+      audio: 'https://example.com/sample.mp3',
+      image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d',
+      timestamp: new Date()
+    }
+  ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -119,6 +156,204 @@ const AICreationPage = () => {
     }, 1000);
   };
 
+  const renderContent = () => {
+    if (!selectedCategory) {
+      return (
+        <div className="flex-1 flex items-center justify-center text-muted-foreground">
+          请选择左侧创作工具开始创作
+        </div>
+      );
+    }
+
+    if (selectedCategory === 'text') {
+      return (
+        <>
+          {/* 工具选择栏 */}
+          <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+            <div className="flex gap-2">
+              {categories.find(c => c.id === selectedCategory)?.tools.map((tool) => (
+                <Button
+                  key={tool.id}
+                  variant={selectedTool === tool.id ? "default" : "outline"}
+                  className={selectedTool === tool.id ? "bg-zhiliao-500 text-white" : ""}
+                  onClick={() => setSelectedTool(tool.id)}
+                >
+                  {tool.name}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* 聊天区域 */}
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`flex items-start space-x-2 max-w-[80%] ${
+                    message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+                  }`}>
+                    <Avatar>
+                      {message.role === 'user' ? (
+                        <div className="h-full w-full rounded-full bg-zhiliao-500 flex items-center justify-center text-white">
+                          U
+                        </div>
+                      ) : (
+                        <div className="h-full w-full rounded-full bg-slate-500 flex items-center justify-center text-white">
+                          <Bot className="h-4 w-4" />
+                        </div>
+                      )}
+                    </Avatar>
+                    <div className={`rounded-lg p-3 ${
+                      message.role === 'user'
+                        ? 'bg-zhiliao-500 text-white'
+                        : theme === 'dark'
+                        ? 'bg-slate-700'
+                        : 'bg-slate-100'
+                    }`}>
+                      <p>{message.content}</p>
+                      <div className={`text-xs mt-1 ${
+                        message.role === 'user'
+                          ? 'text-white/70'
+                          : 'text-muted-foreground'
+                      }`}>
+                        {message.timestamp.toLocaleTimeString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+
+          {/* 输入区域 */}
+          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex space-x-2">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                placeholder="输入创作提示词..."
+                className="flex-1"
+              />
+              <Button
+                onClick={handleSendMessage}
+                className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {/* 工具选择栏 */}
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+          <div className="flex gap-2">
+            {categories.find(c => c.id === selectedCategory)?.tools.map((tool) => (
+              <Button
+                key={tool.id}
+                variant={selectedTool === tool.id ? "default" : "outline"}
+                className={selectedTool === tool.id ? "bg-zhiliao-500 text-white" : ""}
+                onClick={() => setSelectedTool(tool.id)}
+              >
+                {tool.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* 瀑布流展示区域 */}
+        <ScrollArea className="flex-1 p-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {generatedContents.map((content) => (
+              <div
+                key={content.id}
+                className={`rounded-lg overflow-hidden ${
+                  theme === 'dark' ? 'bg-slate-700' : 'bg-white'
+                } shadow-lg`}
+              >
+                {content.image && (
+                  <div className="aspect-video">
+                    <img
+                      src={content.image}
+                      alt={content.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                {content.video && (
+                  <div className="aspect-video">
+                    <video
+                      src={content.video}
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                {content.audio && (
+                  <div className="p-4">
+                    <audio src={content.audio} controls className="w-full" />
+                  </div>
+                )}
+                <div className="p-4">
+                  <h3 className="font-medium mb-2">{content.title}</h3>
+                  <p className="text-sm text-muted-foreground">{content.content}</p>
+                  <div className="mt-2 text-xs text-muted-foreground">
+                    {content.timestamp.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+
+        {/* 创作输入区域 */}
+        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+          <div className="flex space-x-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={`输入${categories.find(c => c.id === selectedCategory)?.title}提示词...`}
+              className="flex-1"
+            />
+            <Button
+              onClick={() => {}}
+              className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+              disabled={isGenerating}
+            >
+              {isGenerating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          {isGenerating && (
+            <div className="mt-2">
+              <div className="h-1 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-zhiliao-500 transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="flex justify-between mt-1 text-xs text-muted-foreground">
+                <span>生成进度</span>
+                <span>{progress}%</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'}`}>
       <div className="container mx-auto px-4 py-8">
@@ -176,95 +411,7 @@ const AICreationPage = () => {
             <div className={`rounded-xl ${
               theme === 'dark' ? 'bg-slate-800' : 'bg-white'
             } shadow-lg h-full flex flex-col`}>
-              {!selectedCategory ? (
-                <div className="flex-1 flex items-center justify-center text-muted-foreground">
-                  请选择左侧创作工具开始创作
-                </div>
-              ) : (
-                <>
-                  {/* 工具选择栏 */}
-                  {selectedCategory && (
-                    <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-                      <div className="flex gap-2">
-                        {categories.find(c => c.id === selectedCategory)?.tools.map((tool) => (
-                          <Button
-                            key={tool.id}
-                            variant={selectedTool === tool.id ? "default" : "outline"}
-                            className={selectedTool === tool.id ? "bg-zhiliao-500 text-white" : ""}
-                            onClick={() => setSelectedTool(tool.id)}
-                          >
-                            {tool.name}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 聊天/展示区域 */}
-                  <ScrollArea className="flex-1 p-4">
-                    <div className="space-y-4">
-                      {messages.map((message, index) => (
-                        <div
-                          key={index}
-                          className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div className={`flex items-start space-x-2 max-w-[80%] ${
-                            message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
-                          }`}>
-                            <Avatar>
-                              {message.role === 'user' ? (
-                                <div className="h-full w-full rounded-full bg-zhiliao-500 flex items-center justify-center text-white">
-                                  U
-                                </div>
-                              ) : (
-                                <div className="h-full w-full rounded-full bg-slate-500 flex items-center justify-center text-white">
-                                  <Bot className="h-4 w-4" />
-                                </div>
-                              )}
-                            </Avatar>
-                            <div className={`rounded-lg p-3 ${
-                              message.role === 'user'
-                                ? 'bg-zhiliao-500 text-white'
-                                : theme === 'dark'
-                                ? 'bg-slate-700'
-                                : 'bg-slate-100'
-                            }`}>
-                              <p>{message.content}</p>
-                              <div className={`text-xs mt-1 ${
-                                message.role === 'user'
-                                  ? 'text-white/70'
-                                  : 'text-muted-foreground'
-                              }`}>
-                                {message.timestamp.toLocaleTimeString()}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      <div ref={messagesEndRef} />
-                    </div>
-                  </ScrollArea>
-
-                  {/* 输入区域 */}
-                  <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-                    <div className="flex space-x-2">
-                      <Input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                        placeholder="输入创作提示词..."
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={handleSendMessage}
-                        className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
-                      >
-                        <Send className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </>
-              )}
+              {renderContent()}
             </div>
           </div>
         </div>
