@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Brain, FileText, Image, Clapperboard, Music, Mic, 
   Box, Workflow, Calendar, Play, Loader2, Check, RefreshCw,
-  Download, ArrowLeft
+  Download, ArrowLeft, ChevronDown, ChevronRight
 } from 'lucide-react';
 
 const AICreation = () => {
@@ -17,6 +17,7 @@ const AICreation = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   const tools = {
     copywriting: {
@@ -45,8 +46,54 @@ const AICreation = () => {
         { label: '视频风格', values: ['商务', '科技', '生活', '创意'] }
       ]
     },
-    // ... 其他工具配置
+    image: {
+      title: 'AI 生图片',
+      description: '高质量图像生成与编辑',
+      icon: <Image className="text-zhiliao-500" />,
+      models: ['SD', 'LUMIA', 'COMFYUI', 'FLUX'],
+      placeholder: '请输入图片描述...',
+      generateTime: 20,
+      options: [
+        { label: '图片风格', values: ['写实', '动漫', '油画', '水彩'] },
+        { label: '图片尺寸', values: ['1:1', '16:9', '9:16', '4:3'] },
+        { label: '生成数量', values: ['1张', '4张', '9张'] }
+      ]
+    },
+    music: {
+      title: 'AI 生音乐',
+      description: '智能音乐创作与编曲',
+      icon: <Music className="text-zhiliao-500" />,
+      models: ['海绵', 'suno', 'udio'],
+      placeholder: '请输入音乐风格或情绪...',
+      generateTime: 25,
+      options: [
+        { label: '音乐风格', values: ['流行', '古典', '电子', '爵士'] },
+        { label: '时长', values: ['30秒', '1分钟', '2分钟', '3分钟'] },
+        { label: '情绪', values: ['欢快', '舒缓', '激情', '忧伤'] }
+      ]
+    }
   };
+
+  const historyItems = [
+    {
+      type: '文案',
+      title: '品牌故事文案',
+      date: '2024-03-27 09:47',
+      content: '匠心精神，传承创新...'
+    },
+    {
+      type: '视频',
+      title: '产品展示视频',
+      date: '2024-03-27 09:45',
+      thumbnail: 'https://picsum.photos/200/112?random=1'
+    },
+    {
+      type: '图片',
+      title: '未来城市场景',
+      date: '2024-03-27 09:40',
+      thumbnail: 'https://picsum.photos/200/112?random=2'
+    }
+  ];
 
   const currentTool = tools[toolType as keyof typeof tools];
 
@@ -79,7 +126,7 @@ const AICreation = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">工具不存在</h2>
-          <Button onClick={() => navigate('/ai-creation')}>返回创作中心</Button>
+          <Button onClick={() => navigate('/')}>返回首页</Button>
         </div>
       </div>
     );
@@ -88,51 +135,103 @@ const AICreation = () => {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
       <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          className="mb-6"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          返回
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            返回首页
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowHistory(!showHistory)}
+            className="sm:hidden"
+          >
+            历史记录
+            <ChevronDown className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* 左侧模型选择 */}
-          <div className={`p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
-            <div className="flex items-center space-x-3 mb-6">
-              {currentTool.icon}
-              <div>
-                <h2 className="text-xl font-bold">{currentTool.title}</h2>
-                <p className="text-sm text-muted-foreground">{currentTool.description}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* 左侧工具栏 */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className={`p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
+              <div className="flex items-center space-x-3 mb-6">
+                {currentTool.icon}
+                <div>
+                  <h2 className="text-xl font-bold">{currentTool.title}</h2>
+                  <p className="text-sm text-muted-foreground">{currentTool.description}</p>
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold mb-4">选择模型</h3>
+              <div className="space-y-3">
+                {currentTool.models.map((model, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setSelectedModel(model)}
+                    className={`p-4 rounded-lg cursor-pointer transition-all ${
+                      selectedModel === model
+                        ? 'bg-zhiliao-500 text-white'
+                        : theme === 'dark'
+                        ? 'bg-slate-700 hover:bg-slate-600'
+                        : 'bg-slate-100 hover:bg-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{model}</span>
+                      {selectedModel === model && <Check className="h-5 w-5" />}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <h3 className="text-lg font-semibold mb-4">选择模型</h3>
-            <div className="space-y-3">
-              {currentTool.models.map((model, index) => (
-                <div
-                  key={index}
-                  onClick={() => setSelectedModel(model)}
-                  className={`p-4 rounded-lg cursor-pointer transition-all ${
-                    selectedModel === model
-                      ? 'bg-zhiliao-500 text-white'
-                      : theme === 'dark'
-                      ? 'bg-slate-700 hover:bg-slate-600'
-                      : 'bg-slate-100 hover:bg-slate-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{model}</span>
-                    {selectedModel === model && <Check className="h-5 w-5" />}
+            {/* 历史记录 - 桌面端显示 */}
+            <div className={`hidden sm:block p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">历史记录</h3>
+                <Button variant="ghost" size="sm">
+                  查看全部
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+              <div className="space-y-4">
+                {historyItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`p-3 rounded-lg cursor-pointer ${
+                      theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600' : 'bg-slate-100 hover:bg-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-start space-x-3">
+                      {item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          className="w-16 h-9 rounded object-cover"
+                        />
+                      ) : (
+                        <div className={`w-16 h-9 rounded flex items-center justify-center ${
+                          theme === 'dark' ? 'bg-slate-600' : 'bg-slate-200'
+                        }`}>
+                          <FileText className="h-4 w-4 text-zhiliao-500" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{item.title}</p>
+                        <p className="text-xs text-muted-foreground">{item.date}</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
           {/* 右侧生成区域 */}
-          <div className={`p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg md:col-span-2`}>
+          <div className={`lg:col-span-3 p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">场景描述</label>
               <textarea
@@ -162,13 +261,13 @@ const AICreation = () => {
               </div>
             )}
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Calendar className="h-4 w-4" />
                 <span>预计生成时间: {currentTool.generateTime}秒</span>
               </div>
               <Button
-                className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                className="w-full sm:w-auto bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
                 disabled={!selectedModel || isGenerating}
                 onClick={handleGenerate}
               >
@@ -206,7 +305,7 @@ const AICreation = () => {
 
             {generatedContent && (
               <div className={`mt-6 p-4 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                   <h4 className="font-medium">生成结果</h4>
                   <div className="flex items-center space-x-3">
                     <Button
@@ -254,6 +353,51 @@ const AICreation = () => {
           </div>
         </div>
       </div>
+
+      {/* 历史记录 - 移动端弹出层 */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 sm:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowHistory(false)} />
+          <div className={`absolute bottom-0 left-0 right-0 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-t-xl p-6`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">历史记录</h3>
+              <Button variant="ghost" size="sm" onClick={() => setShowHistory(false)}>
+                关闭
+              </Button>
+            </div>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+              {historyItems.map((item, index) => (
+                <div
+                  key={index}
+                  className={`p-3 rounded-lg ${
+                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
+                  }`}
+                >
+                  <div className="flex items-start space-x-3">
+                    {item.thumbnail ? (
+                      <img
+                        src={item.thumbnail}
+                        alt={item.title}
+                        className="w-16 h-9 rounded object-cover"
+                      />
+                    ) : (
+                      <div className={`w-16 h-9 rounded flex items-center justify-center ${
+                        theme === 'dark' ? 'bg-slate-600' : 'bg-slate-200'
+                      }`}>
+                        <FileText className="h-4 w-4 text-zhiliao-500" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{item.title}</p>
+                      <p className="text-xs text-muted-foreground">{item.date}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
