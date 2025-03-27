@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@/providers/ThemeProvider';
 import ZhiliaoLogo from '@/components/ZhiliaoLogo';
@@ -9,7 +9,7 @@ import {
   Video, Music, ShoppingCart, Calendar, Play, Pause,
   Brain, DollarSign, Gamepad2, Sun, Moon, Image, FileText,
   Workflow, Clapperboard, Mic, User, Box, Brush, ChevronDown,
-  Loader2, Check, RefreshCw
+  Loader2, Check, RefreshCw, MessageSquare, HeartPulse, Newspaper, HelpCircle, Info
 } from 'lucide-react';
 import { 
   Carousel, 
@@ -286,8 +286,136 @@ const Index = () => {
     }, intervalTime);
   };
 
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const logoPath = import.meta.env.DEV 
+    ? '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'
+    : '/SmartChatAI/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png';
+
+  const handleAction = (action: string) => {
+    switch (action) {
+      case '注册':
+        navigate('/register');
+        break;
+      case '登录':
+        navigate('/login');
+        break;
+      default:
+        alert(`${action}功能开发中...`);
+    }
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const navItems = [
+    { title: "首页", path: "/" },
+    { title: "关于我们", path: "/about" },
+    { title: "新闻资讯", path: "/news" },
+    { title: "帮助中心", path: "/help" },
+    { title: "联系我们", path: "/contact" }
+  ];
+
+  const features = [
+    {
+      icon: <Brain className="h-8 w-8" />,
+      title: "智能对话",
+      description: "基于先进的AI模型，提供智能、自然的对话体验",
+      path: "/chat"
+    },
+    {
+      icon: <Users className="h-8 w-8" />,
+      title: "社交互动",
+      description: "连接志同道合的朋友，分享知识和见解",
+      path: "/community"
+    },
+    {
+      icon: <MessageSquare className="h-8 w-8" />,
+      title: "实时反馈",
+      description: "快速响应，实时互动，让交流更加顺畅",
+      path: "/interactive-game"
+    },
+    {
+      icon: <Gamepad2 className="h-8 w-8" />,
+      title: "互动游戏",
+      description: "趣味性与实用性并存的智能互动体验",
+      path: "/interactive-game"
+    },
+    {
+      icon: <HeartPulse className="h-8 w-8" />,
+      title: "心理咨询",
+      description: "专业的心理健康服务与辅导",
+      path: "/psychology"
+    },
+    {
+      icon: <Bot className="h-8 w-8" />,
+      title: "数字人",
+      description: "打造专属于你的AI数字分身",
+      path: "/digital-human"
+    }
+  ];
+
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 ${theme === 'dark' ? 'bg-slate-900/80' : 'bg-white/80'} backdrop-blur-sm border-b ${theme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-8">
+              <img 
+                src={logoPath}
+                alt="知了智能助手"
+                className="h-8 cursor-pointer"
+                loading="eager"
+                onClick={() => navigate('/')}
+              />
+              <nav className="hidden md:flex space-x-6">
+                {navItems.map((item, index) => (
+                  <button
+                    key={index}
+                    className={`text-sm font-medium hover:text-zhiliao-500 transition-colors ${
+                      theme === 'dark' ? 'text-white' : 'text-slate-900'
+                    }`}
+                    onClick={() => navigate(item.path)}
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </nav>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`${theme === 'dark' ? 'text-white hover:bg-slate-800' : 'text-slate-900 hover:bg-slate-100'}`}
+                onClick={toggleTheme}
+              >
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                onClick={() => handleAction('登录')}
+              >
+                登录
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                onClick={() => handleAction('注册')}
+              >
+                注册
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-zhiliao-600 to-zhiliao-400 opacity-90"></div>
         <div className="container mx-auto px-4 py-12 relative z-10">
@@ -295,7 +423,7 @@ const Index = () => {
             <div className="text-white">
               <div className="mb-4">
                 <img 
-                  src={process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png' : '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'}
+                  src={logoPath}
                   alt="知了智能助手" 
                   className="h-12"
                 />
@@ -307,30 +435,26 @@ const Index = () => {
                 今天你知了了吗？全方位提供智能服务与社交体验。
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <Link to="/register">
-                  <Button size="lg" className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white">
-                    立即注册
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link to="/login">
-                  <Button size="lg" className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white">
-                    登录账户
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white !p-2 !px-3"
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                <Button 
+                  size="lg" 
+                  className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                  onClick={() => handleAction('注册')}
                 >
-                  {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  立即注册
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  className="bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                  onClick={() => handleAction('登录')}
+                >
+                  登录账户
                 </Button>
               </div>
             </div>
             <div className="hidden md:block">
               <img 
-                src={process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png' : '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'}
+                src={logoPath}
                 alt="知了智能助手" 
                 className="max-w-md mx-auto animate-float" 
               />
@@ -413,6 +537,147 @@ const Index = () => {
             </Carousel>
           </div>
         </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-2">AI 创作中心</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            一站式 AI 创作平台，激发无限创意可能
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {aiTools.map((tool, index) => (
+            <div
+              key={index}
+              className={`group relative p-4 rounded-xl cursor-pointer transition-all ${
+                theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-slate-50'
+              } shadow-lg hover:shadow-xl`}
+              onClick={() => setSelectedAITool(tool.key)}
+            >
+              <div className="flex items-start space-x-3">
+                <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                  {tool.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium mb-1 truncate">{tool.title}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{tool.description}</p>
+                </div>
+              </div>
+              
+              <div className="mt-4">
+                <div className="flex flex-wrap gap-2">
+                  {tool.subTools.map((subTool, subIndex) => (
+                    <Badge
+                      key={subIndex}
+                      variant="secondary"
+                      className={`cursor-pointer transition-colors ${
+                        selectedAITool === tool.key && selectedSubTool === subTool
+                          ? 'bg-zhiliao-500 text-white'
+                          : 'bg-zhiliao-500/10 text-zhiliao-500 hover:bg-zhiliao-500/20'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedSubTool(subTool);
+                        setSelectedAITool(tool.key);
+                      }}
+                    >
+                      {subTool}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {selectedAITool && (
+          <div className={`mt-8 p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
+            <div className="max-w-3xl mx-auto">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+                <div className="flex-1 min-w-0">
+                  <input
+                    type="text"
+                    placeholder={aiTools.find(t => t.key === selectedAITool)?.placeholder}
+                    className={`w-full p-3 rounded-lg text-sm ${
+                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
+                    } border-none focus:outline-none focus:ring-2 focus:ring-zhiliao-500`}
+                  />
+                </div>
+                <Button
+                  className="w-full sm:w-auto bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                  disabled={!selectedSubTool || isGenerating}
+                  onClick={handleGenerate}
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      生成中...
+                    </>
+                  ) : (
+                    <>
+                      <Brain className="mr-2 h-4 w-4" />
+                      开始生成
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {isGenerating && (
+                <div className="mb-6">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>生成进度</span>
+                    <span>{Math.round(progress)}%</span>
+                  </div>
+                  <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-zhiliao-500 transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {generatedContent && (
+                <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">生成结果</h4>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-zhiliao-500 hover:text-zhiliao-600"
+                        onClick={() => setGeneratedContent(null)}
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-zhiliao-500 hover:text-zhiliao-600"
+                        onClick={() => {/* 实现复制功能 */}}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="break-words">
+                    {typeof generatedContent === 'string' ? (
+                      <p className="text-sm">{generatedContent}</p>
+                    ) : (
+                      <img
+                        src={generatedContent}
+                        alt="生成的图片"
+                        className="w-full rounded-lg"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="container mx-auto px-4 py-12">
@@ -514,7 +779,7 @@ const Index = () => {
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="w-10 h-10 rounded-full overflow-hidden">
                     <img 
-                      src={process.env.DEPLOY_ENV === 'GH_PAGES' ? '/SmartChatAI/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png' : '/lovable-uploads/d4996f08-c35e-4543-9997-289fd45be96b.png'}
+                      src={logoPath}
                       alt="知了助手" 
                       className="w-full h-full object-cover" 
                     />

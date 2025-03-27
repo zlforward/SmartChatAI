@@ -59,4 +59,11 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  define: {
+    'process.env': {
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      BASE_URL: JSON.stringify(process.env.BASE_URL || '/'),
+      VITE_APP_TITLE: JSON.stringify('知了智能助手'),
+    }
+  }
 }));
