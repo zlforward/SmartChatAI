@@ -733,7 +733,7 @@ const Index = () => {
               className={`group relative p-4 rounded-xl cursor-pointer transition-all ${
                 theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-slate-50'
               } shadow-lg hover:shadow-xl`}
-              onClick={() => setSelectedAITool(tool.key)}
+              onClick={() => navigate(`/ai-creation/${tool.key}`)}
             >
               <div className="flex items-start space-x-3">
                 <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
@@ -751,116 +751,29 @@ const Index = () => {
                     <Badge
                       key={subIndex}
                       variant="secondary"
-                      className={`cursor-pointer transition-colors ${
-                        selectedAITool === tool.key && selectedSubTool === subTool
-                          ? 'bg-zhiliao-500 text-white'
-                          : 'bg-zhiliao-500/10 text-zhiliao-500 hover:bg-zhiliao-500/20'
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedSubTool(subTool);
-                        setSelectedAITool(tool.key);
-                      }}
+                      className="bg-zhiliao-500/10 text-zhiliao-500 hover:bg-zhiliao-500/20"
                     >
                       {subTool}
                     </Badge>
                   ))}
                 </div>
               </div>
+
+              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <Button
+                  className="w-full bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/ai-creation/${tool.key}`);
+                  }}
+                >
+                  立即使用
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>
-
-        {selectedAITool && (
-          <div className={`mt-8 p-4 sm:p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
-            <div className="max-w-3xl mx-auto">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
-                <div className="flex-1 min-w-0">
-                  <input
-                    type="text"
-                    placeholder={aiTools.find(t => t.key === selectedAITool)?.placeholder}
-                    className={`w-full p-3 rounded-lg text-sm ${
-                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'
-                    } border-none focus:outline-none focus:ring-2 focus:ring-zhiliao-500`}
-                  />
-                </div>
-                <Button
-                  className="w-full sm:w-auto bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
-                  disabled={!selectedSubTool || isGenerating}
-                  onClick={handleGenerate}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      生成中...
-                    </>
-                  ) : (
-                    <>
-                      <Brain className="mr-2 h-4 w-4" />
-                      开始生成
-                    </>
-                  )}
-                </Button>
-              </div>
-
-              {isGenerating && (
-                <div className="mb-6">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>生成进度</span>
-                    <span>{Math.round(progress)}%</span>
-                  </div>
-                  <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-zhiliao-500 transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-2 text-center">
-                    正在处理您的请求，请稍候...
-                  </p>
-                </div>
-              )}
-
-              {generatedContent && (
-                <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">生成结果</h4>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-zhiliao-500 hover:text-zhiliao-600"
-                        onClick={() => setGeneratedContent(null)}
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-zhiliao-500 hover:text-zhiliao-600"
-                        onClick={() => {/* 实现复制功能 */}}
-                      >
-                        <Check className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="break-words">
-                    {typeof generatedContent === 'string' ? (
-                      <p className="text-sm">{generatedContent}</p>
-                    ) : (
-                      <img
-                        src={generatedContent}
-                        alt="生成的内容"
-                        className="w-full rounded-lg"
-                        loading="lazy"
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="container mx-auto px-4 py-12">

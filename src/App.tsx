@@ -12,6 +12,7 @@ import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import FaqPage from './pages/FaqPage';
 import ContactPage from './pages/ContactPage';
+import AICreation from '@/pages/AICreation';
 
 // 创建 QueryClient 实例
 const queryClient = new QueryClient({
@@ -84,7 +85,7 @@ const App: React.FC = () => {
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/faq" element={<FaqPage />} />
                   <Route path="/contact" element={<ContactPage />} />
-                  <Route path="/ai-creation" element={<AICreationPage />} />
+                  <Route path="/ai-creation/:toolType" element={<AICreation />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Suspense>
