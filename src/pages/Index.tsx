@@ -52,7 +52,7 @@ const Index = () => {
       title: 'AI 创作中心',
       description: '一站式AI创作平台，激发无限创意可能',
       icon: <Brain className="text-zhiliao-500" />,
-      link: '/ai-creation',
+      link: '/ai-creation/copywriting',
       badge: '推荐',
       image: "https://images.unsplash.com/photo-1677442136019-21780ecad995"
     },
