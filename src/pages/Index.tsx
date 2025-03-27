@@ -28,11 +28,6 @@ const Index = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
-  const [selectedAITool, setSelectedAITool] = useState<string | null>(null);
-  const [selectedSubTool, setSelectedSubTool] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [generatedContent, setGeneratedContent] = useState<any>(null);
 
   const videos = [
     {
@@ -100,122 +95,6 @@ const Index = () => {
     }
   ];
 
-  const aiTools = [
-    {
-      title: 'AI 生文案',
-      description: '智能文案创作，多场景文本生成',
-      icon: <FileText className="text-zhiliao-500" />,
-      key: 'copywriting',
-      subTools: ['GPT-4', 'Claude', 'Gemini'],
-      placeholder: '请输入文案主题或关键词...',
-      generateTime: 15,
-      sampleOutput: '匠心精神，传承创新。我们始终坚持以客户为中心，追求卓越品质，用创新思维推动行业发展...'
-    },
-    {
-      title: 'AI 生图片',
-      description: '高质量图像生成与编辑',
-      icon: <Image className="text-zhiliao-500" />,
-      key: 'image',
-      subTools: ['SD', 'LUMIA', 'COMFYUI', 'FLUX'],
-      placeholder: '请输入图片描述...',
-      generateTime: 20,
-      sampleOutput: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69'
-    },
-    {
-      title: 'AI 生视频',
-      description: '智能视频创作与编辑',
-      icon: <Clapperboard className="text-zhiliao-500" />,
-      key: 'video',
-      subTools: ['可灵', '即梦', '海螺', 'vidu'],
-      placeholder: '请输入视频场景描述...',
-      generateTime: 30,
-      sampleOutput: 'https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-a-breeze-1188-large.mp4'
-    },
-    {
-      title: 'AI 生音乐',
-      description: '智能音乐创作与编曲',
-      icon: <Music className="text-zhiliao-500" />,
-      key: 'music',
-      subTools: ['海绵', 'suno', 'udio'],
-      placeholder: '请输入音乐风格或情绪...',
-      generateTime: 25,
-      sampleOutput: 'https://example.com/sample-music.mp3'
-    },
-    {
-      title: 'AI 对口型',
-      description: '智能语音唇形同步',
-      icon: <Mic className="text-zhiliao-500" />,
-      key: 'lip-sync',
-      subTools: ['wav2lip', 'SadTalker'],
-      placeholder: '请上传视频和音频文件...',
-      generateTime: 35,
-      sampleOutput: 'https://example.com/sample-lip-sync.mp4'
-    },
-    {
-      title: 'AI 换装',
-      description: '智能服装搭配与换装',
-      icon: <User className="text-zhiliao-500" />,
-      key: 'dress-up',
-      subTools: ['DressFormer', 'VITON'],
-      placeholder: '请上传人物照片和目标服装...',
-      generateTime: 20,
-      sampleOutput: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d'
-    },
-    {
-      title: 'AI 生3D资产',
-      description: '3D模型与场景生成',
-      icon: <Box className="text-zhiliao-500" />,
-      key: '3d',
-      subTools: ['混元', 'tripo', 'meshy'],
-      placeholder: '请输入3D模型描述...',
-      generateTime: 40,
-      sampleOutput: 'https://example.com/sample-3d-model.glb'
-    },
-    {
-      title: 'AI 工作流',
-      description: '自定义AI工作流程',
-      icon: <Workflow className="text-zhiliao-500" />,
-      key: 'workflow',
-      subTools: ['n8n', 'Zapier', 'Make'],
-      placeholder: '请描述您的工作流程...',
-      generateTime: 10,
-      sampleOutput: '{"workflow": "email_to_notion", "steps": ["trigger_email", "extract_data", "create_page"]}'
-    }
-  ];
-
-  const aiWorks = [
-    {
-      type: '文案',
-      title: '品牌故事文案',
-      content: '匠心精神，传承创新...',
-      image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1000"
-    },
-    {
-      type: '图片',
-      title: '未来城市景观',
-      content: 'SD生成未来科技城市',
-      image: "https://images.unsplash.com/photo-1519638831568-d9897f54ed69?q=80&w=1000"
-    },
-    {
-      type: '视频',
-      title: '产品宣传片',
-      content: '可灵生成的产品展示',
-      image: "https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=1000"
-    },
-    {
-      type: '音乐',
-      title: '电子音乐',
-      content: 'suno生成的电子乐曲',
-      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1000"
-    },
-    {
-      type: '3D',
-      title: '游戏角色模型',
-      content: '混元生成的游戏角色',
-      image: "https://images.unsplash.com/photo-1525434280327-e525e03f17ef?q=80&w=1000"
-    }
-  ];
-
   const toggleVideoPlay = () => {
     const video = document.getElementById(`video-${activeVideoIndex}`) as HTMLVideoElement;
     if (video) {
@@ -259,31 +138,6 @@ const Index = () => {
     }
     setActiveVideoIndex(index);
     setIsPlaying(false);
-  };
-
-  const handleGenerate = async () => {
-    const selectedTool = aiTools.find(tool => tool.key === selectedAITool);
-    if (!selectedTool || !selectedSubTool) return;
-
-    setIsGenerating(true);
-    setProgress(0);
-
-    const totalTime = selectedTool.generateTime * 1000; // 转换为毫秒
-    const intervalTime = 100; // 每100毫秒更新一次进度
-    const steps = totalTime / intervalTime;
-    let currentStep = 0;
-
-    const interval = setInterval(() => {
-      currentStep++;
-      const newProgress = Math.min((currentStep / steps) * 100, 100);
-      setProgress(newProgress);
-
-      if (currentStep >= steps) {
-        clearInterval(interval);
-        setIsGenerating(false);
-        setGeneratedContent(selectedTool.sampleOutput);
-      }
-    }, intervalTime);
   };
 
   useEffect(() => {
@@ -536,64 +390,6 @@ const Index = () => {
               </div>
             </Carousel>
           </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2">AI 创作中心</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            一站式 AI 创作平台，激发无限创意可能
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {aiTools.map((tool, index) => (
-            <div
-              key={index}
-              className={`group relative p-4 rounded-xl cursor-pointer transition-all ${
-                theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-slate-50'
-              } shadow-lg hover:shadow-xl`}
-              onClick={() => navigate(`/ai-creation/${tool.key}`)}
-            >
-              <div className="flex items-start space-x-3">
-                <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                  {tool.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-medium mb-1 truncate">{tool.title}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{tool.description}</p>
-                </div>
-              </div>
-              
-              <div className="mt-4">
-                <div className="flex flex-wrap gap-2">
-                  {tool.subTools.map((subTool, subIndex) => (
-                    <Badge
-                      key={subIndex}
-                      variant="secondary"
-                      className="bg-zhiliao-500/10 text-zhiliao-500 hover:bg-zhiliao-500/20"
-                    >
-                      {subTool}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                <Button
-                  className="w-full bg-zhiliao-500 hover:bg-zhiliao-600 text-white"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/ai-creation/${tool.key}`);
-                  }}
-                >
-                  立即使用
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
