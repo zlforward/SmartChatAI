@@ -772,7 +772,7 @@ const Index = () => {
         </div>
 
         {selectedAITool && (
-          <div className={`mt-8 p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
+          <div className={`mt-8 p-4 sm:p-6 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} shadow-lg`}>
             <div className="max-w-3xl mx-auto">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
                 <div className="flex-1 min-w-0">
@@ -815,6 +815,9 @@ const Index = () => {
                       style={{ width: `${progress}%` }}
                     />
                   </div>
+                  <p className="text-sm text-muted-foreground mt-2 text-center">
+                    正在处理您的请求，请稍候...
+                  </p>
                 </div>
               )}
 
@@ -847,8 +850,9 @@ const Index = () => {
                     ) : (
                       <img
                         src={generatedContent}
-                        alt="生成的图片"
+                        alt="生成的内容"
                         className="w-full rounded-lg"
+                        loading="lazy"
                       />
                     )}
                   </div>
